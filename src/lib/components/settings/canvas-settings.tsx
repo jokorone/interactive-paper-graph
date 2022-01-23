@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from './../../util/theme';
+import { useTheme } from '../../utils/theme';
 import { ReactComponent as DarkmodeSVG } from './../../icons/darkmode-toggle.svg'
 
 

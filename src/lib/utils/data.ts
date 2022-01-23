@@ -1,7 +1,7 @@
 import React from 'react';
-import jsonData from './../../data/mock.json';
+import jsonData from '../../data/mock.json';
 
-import { Node, RawNode, RawLink, InitialNode, KeyValueContainer  } from './../model';
+import { Node, RawNode, RawLink, InitialNode, KeyValueContainer  } from '../models';
 
 export const makeIterable = (key: string) => <T>(value: T): [ string, T ] => [ key, value ];
 

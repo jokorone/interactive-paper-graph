@@ -1,9 +1,9 @@
 import React from 'react';
 import Paper from 'paper';
 
-import { KeyValueContainer, Node } from '../model';
+import { KeyValueContainer, Node } from '../models';
 
-import { makeIterable } from '../util/data';
+import { makeIterable } from './data';
 import { useThemedColors } from './colors';
 
 const PaperDefaults = {

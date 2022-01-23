@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { GraphSettings } from '../defaults/graph-settings';
-import { Node, Link, GraphModel } from './../model';
+import { Node, Link, GraphModel } from '../models';
 import { SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 
 export const useSimulation = () => {

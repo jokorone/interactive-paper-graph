@@ -1,5 +1,5 @@
 import Paper from 'paper';
-import { Themes } from '../model/theme';
+import { Themes } from '../models/theme';
 
 export const ThemedColors = {
   [Themes.Dark]: {

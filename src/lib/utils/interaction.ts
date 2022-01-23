@@ -5,7 +5,7 @@ import { select } from 'd3';
 import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
 
-import { Link, Node } from '../model';
+import { Link, Node } from '../models';
 
 const MouseOptions = { position: [0,0], radius: 8, fillColor: new Paper.Color('black'), opacity: .2 };
 

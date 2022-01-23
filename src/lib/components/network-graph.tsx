@@ -1,8 +1,8 @@
 import { Canvas } from "./canvas";
 import { CanvasSettings } from './settings';
 
-import { ThemeContext, useTheme } from '../util/theme';
-import { useGraphData } from '../util/data';
+import { ThemeContext, useTheme } from '../utils/theme';
+import { useGraphData } from '../utils/data';
 
 export const NetworkGraph = () => {
   const { theme, toggleTheme } = useTheme(),

@@ -2,15 +2,15 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { useSimulation } from './../../util/simulation';
-import { usePaperItems } from './../../util/paper';
+import { useSimulation } from '../../utils/simulation';
+import { usePaperItems } from '../../utils/paper';
 
-import { PaperModel } from './../../model/paper';
-import { useThemedColors } from './../../util/colors';
-import { Node, KeyValueContainer } from './../../model';
+import { PaperModel } from '../../models/paper';
+import { useThemedColors } from '../../utils/colors';
+import { Node, KeyValueContainer } from '../../models';
 
-import { useAnimations } from './../../util/animations';
-import { useInteractions } from './../../util/interaction';
+import { useAnimations } from '../../utils/animations';
+import { useInteractions } from '../../utils/interaction';
 
 type CanvasProps = {
   data: KeyValueContainer<Node>;
