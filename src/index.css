@@ -1,5 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
+  height: calc(100vh);
+	width: 100vw;
+	overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -10,4 +17,40 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@layer components {
+  .icon {
+		@apply cursor-pointer w-12 h-12 relative flex items-center justify-center m-2 p-2
+		       rounded-2xl hover:rounded-lg transition-all
+           hover:bg-gray-800 dark:hover:bg-gray-200
+           hover:text-gray-200 dark:hover:text-gray-800;
+	}
+
+	.tooltip {
+		@apply absolute w-auto p-2 m-2 min-w-max
+		rounded-md shadow-md
+		text-xs font-bold
+		transition-all duration-100 scale-0
+    bg-gray-800 dark:bg-gray-200
+    text-gray-200 dark:text-gray-800
+    hover:bg-gray-800 dark:hover:bg-gray-200
+    hover:text-gray-200 dark:hover:text-gray-800;
+	}
+
+  .colored {
+    @apply hover:bg-gray-800 dark:hover:bg-gray-200
+    hover:text-gray-200 dark:hover:text-gray-800;
+  }
+
+	.svg-icon {
+		@apply h-8 w-8  text-gray-800 dark:text-gray-200 hover:bg-gray-800 dark:hover:bg-gray-200
+                    hover:text-gray-200 dark:hover:text-gray-800;
+	}
+
+  canvas {
+    /* allow panning (x,y) & pinch2zoom */
+    touch-action: manipulation;
+    overflow: hidden;
+  }
 }
