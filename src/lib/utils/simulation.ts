@@ -1,10 +1,12 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { GraphSettings } from '../defaults/graph-settings';
 import { Node, Link, GraphModel } from '../models';
 import { SimulationLinkDatum, SimulationNodeDatum } from 'd3';
+import { SettingsContext } from './settings';
 
 export const useSimulation = () => {
+  const { settings } = React.useContext(SettingsContext);
+
   const simulation = React.useMemo(
     () => d3.forceSimulation<Node, Link>(),
     []
@@ -24,18 +26,19 @@ export const useSimulation = () => {
   const attachForces = React.useCallback(
     () => {
       console.log('attach forces to sim');
+
       simulation
         .force('link', forces.forceLink
-          .distance(GraphSettings.linkDistance)
+          .distance(settings.simulation.linkDistance)
           .iterations(1)
           .id((l: any) => l.id))
         .force('charge', forces.forceCharge
-          .strength(GraphSettings.chargeForceStrength)
-          .distanceMin(GraphSettings.chargeDistanceMin)
-          .distanceMax(GraphSettings.chargeDistanceMax))
+          .strength(settings.simulation.chargeForceStrength)
+          .distanceMin(settings.simulation.chargeDistanceMin)
+          .distanceMax(settings.simulation.chargeDistanceMax))
         .force('collide', forces.forceCollide
-          .strength(GraphSettings.collideStrength)
-          .radius(GraphSettings.collideRadius)
+          .strength(settings.simulation.collideStrength)
+          .radius(settings.simulation.collideRadius)
           .iterations(1))
         .force('forceX', forces.forceX
           .x(window.innerWidth / 2))
@@ -44,7 +47,7 @@ export const useSimulation = () => {
 
       simulation.alphaDecay(.01);
     },
-    [simulation, forces]
+    [simulation, forces, settings]
   );
 
   React.useEffect(attachForces, [attachForces]);

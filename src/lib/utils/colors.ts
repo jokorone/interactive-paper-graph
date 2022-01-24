@@ -1,10 +1,10 @@
 import React from "react";
 
-import { ThemeContext } from "./theme";
 import { PaperColors, ThemedColors } from "../defaults/colors";
+import { SettingsContext } from "./settings";
 
 export const useThemedColors = () => {
-  const theme = React.useContext(ThemeContext);
+  const { settings: { theme } } = React.useContext(SettingsContext);
 
   const hexColors = ThemedColors[theme];
   const paperColors = PaperColors[theme];

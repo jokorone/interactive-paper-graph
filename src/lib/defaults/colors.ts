@@ -2,12 +2,12 @@ import Paper from 'paper';
 import { Themes } from '../models/theme';
 
 export const ThemedColors = {
-  [Themes.Dark]: {
+  dark: {
     primary: '#2c2b2c',
     accent: '#d6d3d1',
     highlight: '',
   },
-  [Themes.Light]: {
+  light: {
     primary: '#e7e5e4',
     accent: '#2c2b2c',
     highlight: '',
@@ -15,12 +15,12 @@ export const ThemedColors = {
 }
 
 export const PaperColors = {
-  [Themes.Dark]: {
+  dark: {
     primary: new Paper.Color('#2c2b2c'),
     accent: new Paper.Color('#d6d3d1'),
     highlight: new Paper.Color(''),
   },
-  [Themes.Light]: {
+  light: {
     primary: new Paper.Color('#e7e5e4'),
     accent: new Paper.Color('#2c2b2c'),
     highlight: new Paper.Color(''),

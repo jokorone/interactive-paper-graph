@@ -1,7 +1,6 @@
 import Paper from 'paper';
 import * as d3 from 'd3';
 
-
 type DelayCallbacks = {
   delay: number,
   callback: () => void,

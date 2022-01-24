@@ -54,11 +54,11 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
         this.radius(node, PaperDefaults.Node.radius)
         node.opacity = PaperDefaults.Node.opacity;
       },
-      link: function (hovered: boolean, from: d3.SubjectPosition, to: d3.SubjectPosition, path: paper.Path) {
+      link: function (sourceIsHovered: boolean, from: d3.SubjectPosition, to: d3.SubjectPosition, path: paper.Path) {
         path.firstSegment.point = create.point(from);
         path.lastSegment.point = create.point(to);
         path.strokeColor = paperColors.accent;
-        path.opacity = hovered ? 1 : PaperDefaults.Link.opacity;
+        path.opacity = sourceIsHovered ? 1 : PaperDefaults.Link.opacity;
       },
       highlight: function (node: paper.Path, label: paper.PointText) {
         this.radius(node, 5);
@@ -73,8 +73,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
         path.scale(newRadiusWithoutStroke / oldRadiusWithoutStroke);
       },
       remove: function(item: paper.Item) {
-        item.remove()
-        return null;
+        return item.remove(), null;
       },
     }),
     [paperColors]

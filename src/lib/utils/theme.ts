@@ -1,12 +1,12 @@
 import React from 'react';
-import { Theme, Themes } from '../models/theme';
+import { Theme } from '../models/theme';
 
-export const ThemeContext = React.createContext<Theme>(Themes.Dark);
+export const ThemeContext = React.createContext<Theme>('dark');
 
 export function useTheme() {
-  const [ theme, setTheme ] = React.useState<Theme>(Themes.Dark);
+  const [ theme, setTheme ] = React.useState<Theme>('dark');
 
-  const invert = (theme: Theme) => theme === Themes.Dark ? Themes.Light : Themes.Dark;
+  const invert = (theme: Theme) => theme === 'dark' ? 'light' : 'dark';
 
   React.useEffect(() => {
     const bodyClass = window.document.body.classList;

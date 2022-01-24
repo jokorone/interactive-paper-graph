@@ -19,7 +19,7 @@ const InteractionConfig = {
   }
 };
 
-export type DragEvent = d3.D3DragEvent<Element, Node, Node>;
+export type DragEvent = d3.D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
 type Gestures = 'drag' | 'wheel' | 'zoom' | 'hover';
 
@@ -52,9 +52,11 @@ export const useInteractions = () => {
         draggedNode = React.useRef<Node | null>(null);
 
   const offsets = React.useRef<InteractionOffsets>(InitialOffsets),
-    _setOffsets = (key: keyof InteractionOffsets) =>
-      (value: InteractionOffsets[keyof InteractionOffsets]) =>
-        (offsets.current = { ...offsets.current, [key]: value }),
+    _setOffsets = (
+        key: keyof InteractionOffsets
+      ) => (
+        value: InteractionOffsets[keyof InteractionOffsets]
+      ) => (offsets.current = { ...offsets.current, [key]: value }),
     setPanOffset = _setOffsets('pan'),
     setZoomLevel = _setOffsets('zoom');
 
@@ -90,12 +92,16 @@ export const useInteractions = () => {
 
     const dragstart = (event: DragEvent) => {
       if (event.subject instanceof HTMLCanvasElement) {
+
         const point = new Paper.Point(Math.floor(event.x), Math.floor(event.y));
         setPanOffset(view.viewToProject(point));
+
       } else {
+
         if (!event.active) simulation.alphaTarget(0.3).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
+
       }
       start();
       cancelEvent(event.sourceEvent)

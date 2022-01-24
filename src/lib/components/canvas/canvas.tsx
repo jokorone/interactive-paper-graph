@@ -27,9 +27,9 @@ export const Canvas = ({ data }: CanvasProps) => {
 
     { simulation, updateSimulationData } = useSimulation(),
     { createPaperItems, makeItemUpdater, create } = usePaperItems(data),
-    { hexColors, paperColors }           = useThemedColors(),
-    { changeCanvasTheme }                = useAnimations(),
-    registerInteractionHandlers              = useInteractions();
+    { hexColors, paperColors } = useThemedColors(),
+    { changeCanvasTheme } = useAnimations(),
+    registerInteractionHandlers = useInteractions();
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
@@ -37,32 +37,29 @@ export const Canvas = ({ data }: CanvasProps) => {
     fixAspectRatio();
   }, []);
 
-  const initializeInteractivity = React.useCallback(
+  const setupCanvas = React.useCallback(
     () => {
-      console.log('reset interactivity');
+      updateSimulationData(data);
+
+      items.current = createPaperItems();
+      project.current!.view.onFrame = draw;
 
       interaction.current = registerInteractionHandlers(
         project.current!,
         ref.current!,
         simulation,
       );
+
+      return () => {
+        console.log('stop & recreate canvas');
+        simulation.stop();
+        project.current?.activeLayer.remove();
+      };
     },
-    [data, hexColors]
-  );
+    [data]
+  )
 
-  React.useEffect(() => {
-    updateSimulationData(data);
-    initializeInteractivity();
-
-    items.current = createPaperItems();
-    project.current!.view.onFrame = draw;
-
-    return () => {
-      console.log('stop & recreate canvas');
-      simulation.stop();
-      project.current?.activeLayer.remove();
-    };
-  }, [data]);
+  React.useEffect(setupCanvas, [setupCanvas]);
 
   const updateItemUpdater = () => {
     update.current = makeItemUpdater();
