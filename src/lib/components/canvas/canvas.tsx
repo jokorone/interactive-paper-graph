@@ -2,32 +2,31 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { useSimulation } from '../../utils/simulation';
-import { usePaperItems } from '../../utils/paper';
-
 import { PaperModel } from '../../models/paper';
-import { useThemedColors } from '../../utils/colors';
 import { Node, KeyValueContainer } from '../../models';
 
+import { useSimulation } from '../../utils/simulation';
+import { usePaperItems } from '../../utils/paper';
 import { useAnimations } from '../../utils/animations';
-import { useInteractions } from '../../utils/interaction';
+import { useInteractions } from '../../utils/interactions';
+import { SettingsContext } from '../../utils/settings';
 
 type CanvasProps = {
   data: KeyValueContainer<Node>;
 }
-export const Canvas = ({ data }: CanvasProps) => {
-
+export const Canvas = React.memo(({ data }: CanvasProps) => {
   const
-    ref         = React.useRef<HTMLCanvasElement | null>(null),
-    project     = React.useRef<paper.Project | null>(null),
-    items       = React.useRef<PaperModel | null>(null),
-    context     = React.useRef<CanvasRenderingContext2D | null>(),
-    update      = React.useRef<ReturnType<typeof makeItemUpdater> | null>(null),
-    interaction = React.useRef<ReturnType<typeof registerInteractionHandlers>>(),
+    { settings: { colors } } = React.useContext(SettingsContext),
 
-    { simulation, updateSimulationData } = useSimulation(),
+    ref          = React.useRef<HTMLCanvasElement | null>(null),
+    project      = React.useRef<paper.Project | null>(null),
+    items        = React.useRef<PaperModel | null>(null),
+    context      = React.useRef<CanvasRenderingContext2D | null>(),
+    update = React.useRef<ReturnType<typeof makeItemUpdater>>(),
+    interaction  = React.useRef<ReturnType<typeof registerInteractionHandlers>>(),
+
+    { simulation } = useSimulation(data),
     { createPaperItems, makeItemUpdater, create } = usePaperItems(data),
-    { hexColors, paperColors } = useThemedColors(),
     { changeCanvasTheme } = useAnimations(),
     registerInteractionHandlers = useInteractions();
 
@@ -39,8 +38,6 @@ export const Canvas = ({ data }: CanvasProps) => {
 
   const setupCanvas = React.useCallback(
     () => {
-      updateSimulationData(data);
-
       items.current = createPaperItems();
       project.current!.view.onFrame = draw;
 
@@ -50,38 +47,31 @@ export const Canvas = ({ data }: CanvasProps) => {
         simulation,
       );
 
-      return () => {
-        console.log('stop & recreate canvas');
-        simulation.stop();
-        project.current?.activeLayer.remove();
-      };
+      return () => project.current!.clear();
     },
-    [data]
-  )
-
+    [ref.current, data]
+  );
   React.useEffect(setupCanvas, [setupCanvas]);
 
-  const updateItemUpdater = () => {
-    update.current = makeItemUpdater();
-  }
-
   const updateCanvasTheme = React.useCallback(
-    () => { items.current!.length && changeTheme() },
-    [hexColors]
+    () => {
+      changeCanvasTheme(ref.current!, colors.canvas);
+      setTimeout(() => {
+        console.log('apply paper colors');
+        update.current = makeItemUpdater();
+      }, 200);
+    },
+    [colors]
   );
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
 
-  const changeTheme = () => {
-    const delayed = { delay: 200, callback: updateItemUpdater };
-    changeCanvasTheme(ref.current!, hexColors.primary, [delayed]);
-  };
 
   function draw() {
     context.current!.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     if ( !simulation.nodes().length
-      || !items.current!.length
-      || !update.current!
+      || !items.current
+      || !update.current
       || !interaction.current) return;
 
     const { getMouse, getDraggedNode } = interaction.current,
@@ -90,10 +80,11 @@ export const Canvas = ({ data }: CanvasProps) => {
 
     let index = 0;
     for (const d3node of simulation.nodes()) {
+
       const { node, links } = items.current![index];
       let label = items.current![index].label;
 
-      const nodeIsHovered = mouse.intersects(node) || mouse.contains(node.position),
+      const nodeIsHovered = mouse.intersects(node),
             nodeIsDragged = d3node.id === draggedNode?.id;
 
       node.position = create.point(d3node);
@@ -105,19 +96,19 @@ export const Canvas = ({ data }: CanvasProps) => {
             = create.label(d3node.id);
         }
 
-        update.current.highlight(node, label);
+        update.current!.highlight(node, label);
       } else {
-        update.current.node(d3node, node);
+        update.current!.node(d3node, node);
 
         if (label) {
           label
             = items.current![index].label
-            = update.current.remove(label);
+            = update.current!.remove(label);
         }
       }
 
       for (const [_targetId, { target, path }] of Object.entries(links)) {
-        update.current.link(nodeIsHovered, d3node, target, path);
+        update.current!.link(nodeIsHovered, d3node, target, path);
       }
 
       ++index;
@@ -136,16 +127,16 @@ export const Canvas = ({ data }: CanvasProps) => {
   }, [interaction.current]);
 
   function fixAspectRatio() {
-    const  { devicePixelRatio: scale, innerWidth, innerHeight } = window;
+    const  { devicePixelRatio, innerWidth, innerHeight } = window;
 
     if (window.devicePixelRatio) {
       select(ref.current)
-        .attr('width', innerWidth * scale)
-        .attr('height', innerHeight * scale)
+        .attr('width', innerWidth * devicePixelRatio)
+        .attr('height', innerHeight * devicePixelRatio)
         .style('width', `${innerWidth}px`)
         .style('height', `${innerHeight}px`);
 
-      context.current!.scale(scale, scale);
+      context.current!.scale(devicePixelRatio, devicePixelRatio);
     }
   }
 
@@ -153,6 +144,4 @@ export const Canvas = ({ data }: CanvasProps) => {
     {ref.current && <button className='m-2 p-2 fixed bottom-0 right-0' onClick={interaction.current!.reset}>reset</button>}
     <canvas ref={ref}></canvas>
   </>);
-}
-
-const stop = (message: string) => void 0; //console.warn(message);
+});

@@ -3,16 +3,18 @@ import React from 'react';
 import { GraphSettings } from '../defaults/graph-settings';
 import { GraphSettingsEnum } from '../models/settings';
 import { Theme } from '../models/theme';
+import { AppColors } from '../defaults/colors';
 
 const _DefaultSettings = {
   theme: 'dark' as Theme,
-  simulation: GraphSettings,
-  paper: {}
+  colors: AppColors.dark,
+  graph: GraphSettings
 }
 
 const _DefaultUpdateSettings = {
   toggleTheme: () => {},
-  updateGraphSetting: (key: GraphSettingsEnum, value: number) => {}
+  updateGraphSetting: (key: GraphSettingsEnum, value: number) => {},
+  setColors: () => {}
 }
 
 const DefaultSettingsProps = {
@@ -20,26 +22,51 @@ const DefaultSettingsProps = {
   updateSettings: _DefaultUpdateSettings
 }
 
-export type Settings = typeof _DefaultSettings;
 export type UpdateSettings = typeof _DefaultUpdateSettings;
 type SettingsContextProps = typeof DefaultSettingsProps;
 
 export const SettingsContext = React.createContext<SettingsContextProps>(DefaultSettingsProps);
 
-// Provider functions for SettingsContext
-export const useSettings = () => {
+export const useSettings = (): {
+  settings: typeof _DefaultSettings,
+  updateSettings: UpdateSettings
+} => {
+  const
+    [ graphSettings, setGraphSettings ] = React.useState<GraphSettings>(_DefaultSettings.graph),
+    [ theme, setTheme ] = React.useState<Theme>(_DefaultSettings.theme),
+    [ colors, setColors ] = React.useState<typeof _DefaultSettings.colors>(_DefaultSettings.colors);
 
-  const [ graphSettings, setGraphSettings ] = React.useState<GraphSettings>(GraphSettings);
-  const theme = React.useState<Theme>();
+  const invertTheme = (theme: Theme): Theme => theme === 'dark' ? 'light' : 'dark';
+  const invertColors = (theme: Theme) => AppColors[invertTheme(theme)] as typeof _DefaultSettings.colors;
 
   const updateGraphSetting = (key: GraphSettingsEnum, value: number) => {
-
     setGraphSettings(settings => ({
       ...settings,
-      key: value
+      [key]: value
     }));
-
   }
 
-  return { graphSettings, updateGraphSetting };
+  React.useEffect(() => {
+
+  }, [theme])
+
+  function toggleTheme() {
+    window.document.body.classList.remove(theme)
+    window.document.body.classList.add(invertTheme(theme))
+    setColors(invertColors(theme));
+    setTheme(invertTheme(theme));
+  };
+
+  return {
+    settings: {
+      graph: graphSettings,
+      theme: theme || 'dark',
+      colors
+    },
+    updateSettings: {
+      updateGraphSetting,
+      toggleTheme,
+      setColors: setColors as () => {}
+    },
+  }
 }

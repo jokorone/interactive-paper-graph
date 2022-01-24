@@ -151,9 +151,7 @@ export const useInteractions = () => {
 
   const createReset = (project: paper.Project) => {
     return () => {
-      console.log('reset');
-      setZoomLevel(1);
-      project.activeLayer.fitBounds(project.view.bounds)
+
     }
   }
 

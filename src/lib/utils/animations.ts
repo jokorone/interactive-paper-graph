@@ -1,13 +1,9 @@
 import Paper from 'paper';
-import * as d3 from 'd3';
+import { select } from 'd3';
 
-type DelayCallbacks = {
-  delay: number,
-  callback: () => void,
-}[];
 export const useAnimations = () => {
 
-  function changeCanvasTheme(canvas: HTMLCanvasElement, fillColor: string, steps: DelayCallbacks) {
+  function changeCanvasTheme(canvas: HTMLCanvasElement, fillColor: string) {
     const path = new Paper.Path.Circle({
       fillColor,
       center: [ window.innerWidth, 0 ],
@@ -28,15 +24,11 @@ export const useAnimations = () => {
 
     path.tween(from, to, options);
 
-    d3.select(canvas)
+    select(canvas)
       .transition()
       .duration(delay)
       .delay(duration)
       .style('background', fillColor)
-
-    for (const { delay, callback } of steps) {
-      setTimeout(callback, delay);
-    }
 
     setTimeout(() => path.remove(), delayed);
   }

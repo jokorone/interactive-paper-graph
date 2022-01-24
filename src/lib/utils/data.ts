@@ -47,17 +47,11 @@ export const fromRawData = (data: {
       .map(createLink);
 
     model[node.id] = {
-      ...InitialNode,
       ...node,
       payload: node,
-      x: (node as Node).x || 0,
-      y: (node as Node).y || 0,
       links: Object.fromEntries(_links),
     }
-
-    Object.seal(model[node.id]);
   }
 
-  console.log('create models');
   return model;
 };

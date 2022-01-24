@@ -1,11 +1,11 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { Node, Link, GraphModel } from '../models';
+import { Node, Link, KeyValueContainer } from '../models';
 import { SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 import { SettingsContext } from './settings';
 
-export const useSimulation = () => {
-  const { settings } = React.useContext(SettingsContext);
+export const useSimulation = (data: KeyValueContainer<Node>) => {
+  const { settings: { graph: graphSettings } } = React.useContext(SettingsContext);
 
   const simulation = React.useMemo(
     () => d3.forceSimulation<Node, Link>(),
@@ -29,16 +29,16 @@ export const useSimulation = () => {
 
       simulation
         .force('link', forces.forceLink
-          .distance(settings.simulation.linkDistance)
+          .distance(graphSettings.linkDistance)
           .iterations(1)
           .id((l: any) => l.id))
         .force('charge', forces.forceCharge
-          .strength(settings.simulation.chargeForceStrength)
-          .distanceMin(settings.simulation.chargeDistanceMin)
-          .distanceMax(settings.simulation.chargeDistanceMax))
+          .strength(graphSettings.chargeForceStrength)
+          .distanceMin(graphSettings.chargeDistanceMin)
+          .distanceMax(graphSettings.chargeDistanceMax))
         .force('collide', forces.forceCollide
-          .strength(settings.simulation.collideStrength)
-          .radius(settings.simulation.collideRadius)
+          .strength(graphSettings.collideStrength)
+          .radius(graphSettings.collideRadius)
           .iterations(1))
         .force('forceX', forces.forceX
           .x(window.innerWidth / 2))
@@ -46,27 +46,36 @@ export const useSimulation = () => {
           .y(window.innerHeight / 2));
 
       simulation.alphaDecay(.01);
-    },
-    [simulation, forces, settings]
-  );
+      simulation.alpha(.3).restart();
 
+      return () => simulation.restart() && void 0;
+    },
+    [simulation, forces, graphSettings]
+  );
   React.useEffect(attachForces, [attachForces]);
 
-  const updateSimulationData = React.useCallback(
-    (data: GraphModel) => {
+  const attachData = React.useCallback(
+    () => {
+      console.log('attach data to sim');
       const createNode = ({ id, group }: Node) => ({ id, group });
 
       const _data = Object.values(data),
             nodes = _data.map(createNode) as Node[],
             links = _data.flatMap(node => Object.values(node.links) as unknown as SimulationLinkDatum<SimulationNodeDatum>);
 
+      if (simulation.nodes().length) {
+        simulation.nodes([]);
+        forces.forceLink.links([]);
+      }
+
       simulation.nodes(nodes);
       forces.forceLink.links(links);
 
-      simulation.restart();
+      simulation.alpha(.3).restart();
     },
-    [simulation, forces]
-  )
+    [data, simulation, forces]
+  );
+  React.useEffect(attachData, [attachData]);
 
-  return { simulation, updateSimulationData };
+  return { simulation };
 }

@@ -1,28 +1,34 @@
 import Paper from 'paper';
-import { Themes } from '../models/theme';
+import { Theme } from '../models/theme';
 
-export const ThemedColors = {
-  dark: {
-    primary: '#2c2b2c',
-    accent: '#d6d3d1',
-    highlight: '',
-  },
-  light: {
-    primary: '#e7e5e4',
-    accent: '#2c2b2c',
-    highlight: '',
+
+const ColorPalettes = {
+  default: {
+    dark: {
+      background: '#2c2b2c',
+      accent: '#d6d3d1'
+    },
+    light: {
+      background: '#e7e5e4',
+      accent: '#2c2b2c'
+    }
+  }
+}
+
+const DarkColors = {
+  canvas: '#2c2b2c',
+  paper: {
+    canvas: new Paper.Color('#2c2b2c'),
+    accent: new Paper.Color('#d6d3d1'),
   },
 }
 
-export const PaperColors = {
-  dark: {
-    primary: new Paper.Color('#2c2b2c'),
-    accent: new Paper.Color('#d6d3d1'),
-    highlight: new Paper.Color(''),
-  },
-  light: {
+const LightColors = {
+  canvas: '#e7e5e4',
+  paper: {
     primary: new Paper.Color('#e7e5e4'),
     accent: new Paper.Color('#2c2b2c'),
-    highlight: new Paper.Color(''),
   },
 }
+
+export const AppColors = { ['light' as Theme]: LightColors, ['dark' as Theme]: DarkColors } as const;

@@ -3,7 +3,7 @@ import { GraphSettingsEnum, GraphSettingInputConfig } from "../models/settings";
 export const humanReadable = (key: GraphSettingsEnum) => HumanGraphSettings[key];
 
 const HumanGraphSettings = {
-  [GraphSettingsEnum.chargeForceStrength]: 'charge strength',
+  [GraphSettingsEnum.chargeForceStrength]: 'cozyness',
   [GraphSettingsEnum.chargeDistanceMin]: 'charge distance min',
   [GraphSettingsEnum.chargeDistanceMax]: 'charge distance max',
   [GraphSettingsEnum.collideStrength]: 'collide strength',
@@ -18,7 +18,7 @@ export const GraphSettings: {
 } = {
   chargeForceStrength: -120,
   chargeDistanceMin: 1,
-  chargeDistanceMax: 1420,
+  chargeDistanceMax: 420,
   collideRadius: 5,
   collideStrength: .7,
   linkDistance: 35,
@@ -27,47 +27,47 @@ export const GraphSettings: {
 }
 export type GraphSettings = typeof GraphSettings;
 
-export const GraphSettingsInput: {
-  [key in GraphSettingsEnum]: GraphSettingInputConfig
+export const GraphSettingsInputs: {
+  // [key in GraphSettingsEnum]: GraphSettingInputConfig
 } = {
   [GraphSettingsEnum.chargeForceStrength]: {
-    step: .1,
+    step: 1,
     min: -200,
     max: 50,
   },
-  [GraphSettingsEnum.chargeDistanceMin]: {
-    step: .1,
-    min: 0,
-    max: 50,
-  },
+  // [GraphSettingsEnum.chargeDistanceMin]: {
+  //   step: .1,
+  //   min: 0,
+  //   max: 500,
+  // },
   [GraphSettingsEnum.chargeDistanceMax]: {
-    step: .1,
-    min: 0,
-    max: 2000,
-  },
-  [GraphSettingsEnum.collideRadius]: {
     step: 1,
     min: 0,
-    max: 100,
+    max: 1312,
   },
-  [GraphSettingsEnum.collideStrength]: {
-    step: .1,
-    min: 0,
-    max: 2,
-  },
+  // [GraphSettingsEnum.collideRadius]: {
+  //   step: 1,
+  //   min: 0,
+  //   max: 100,
+  // },
+  // [GraphSettingsEnum.collideStrength]: {
+  //   step: .1,
+  //   min: 0,
+  //   max: 2,
+  // },
   [GraphSettingsEnum.linkDistance]: {
     step: 1,
     min: 0,
     max: 100,
   },
-  [GraphSettingsEnum.forceX]: {
-    step: .001,
-    min: 0,
-    max: 1,
-  },
-  [GraphSettingsEnum.forceY]: {
-    step: .001,
-    min: 0,
-    max: 1,
-  },
+  // [GraphSettingsEnum.forceX]: {
+  //   step: .1,
+  //   min: 0,
+  //   max: 100,
+  // },
+  // [GraphSettingsEnum.forceY]: {
+  //   step: .1,
+  //   min: 0,
+  //   max: 100,
+  // },
 }
