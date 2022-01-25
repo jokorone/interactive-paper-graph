@@ -20,6 +20,8 @@ const PaperDefaults = {
 export const usePaperItems = (data: KeyValueContainer<Node>) => {
   const { settings: { colors } } = React.useContext(SettingsContext);
 
+  const itemUpdater = React.useRef<ReturnType<typeof makeItemUpdater>>();
+
   const createPaperItems = React.useCallback(
     () => Object.entries(data).map(([ name, node ]) => {
 
@@ -38,9 +40,9 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
       return {
         id: name,
         node: create.node(),
-        label: null,
         links: Object.fromEntries(_links),
-        hints: {}
+        label: null,
+        hints: null,
       }
     }),
     [data]
@@ -97,7 +99,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
 
       path.scale(newRadiusWithoutStroke / oldRadiusWithoutStroke);
     },
-    _removeItem =(item: paper.Item) => (item.remove(), null),
+    _removeItem = (item: paper.Item) => (item.remove(), null),
 
     makeItemUpdater = React.useCallback(
       () => ({
@@ -110,9 +112,15 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
     )
   ;
 
+  React.useEffect(() => {
+    console.log('make updater');
+
+    itemUpdater.current = makeItemUpdater();
+  }, [colors]);
+
   return {
     createPaperItems,
-    makeItemUpdater,
+    getItemUpdater: () => itemUpdater.current,
     create
   };
 }

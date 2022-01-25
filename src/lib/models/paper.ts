@@ -10,7 +10,7 @@ export type PaperNode = {
   node: paper.Path.Circle;
   label: paper.PointText | null;
   links: KeyValueContainer<PaperLink>;
-  hints: KeyValueContainer<paper.Path>;
+  hints: KeyValueContainer<paper.Path> | null;
 }
 
 export type PaperModel = PaperNode[];

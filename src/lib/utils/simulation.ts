@@ -56,7 +56,6 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
 
   const attachData = React.useCallback(
     () => {
-      console.log('attach data to sim');
       const createNode = ({ id, group }: Node) => ({ id, group });
 
       const _data = Object.values(data),

@@ -1,12 +1,12 @@
 {
   "nodes": [
-    {"id": "PaperJS", "group": 1},
-    {"id": "React", "group": 1},
-    {"id": "D3", "group": 1},
-    {"id": "React Hooks", "group": 1},
-    {"id": "Paper Items", "group": 1},
-    {"id": "Theming", "group": 1},
-    {"id": "PKM", "group": 1}
+    {"id": "PaperJS", "group": 1, "content": "PaperJS"},
+    {"id": "React", "group": 1, "content": "React"},
+    {"id": "D3", "group": 1, "content": "D3"},
+    {"id": "React Hooks", "group": 1, "content": "React Hooks"},
+    {"id": "Paper Items", "group": 1, "content": "Paper Items"},
+    {"id": "Theming", "group": 1, "content": "Theming"},
+    {"id": "PKM", "group": 1, "content": "PKM"}
   ],
   "links": [
     {"source": "D3", "target": "React", "value": 4},

@@ -21,11 +21,10 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
     project      = React.useRef<paper.Project | null>(null),
     items        = React.useRef<PaperModel | null>(null),
     context      = React.useRef<CanvasRenderingContext2D | null>(),
-    update = React.useRef<ReturnType<typeof makeItemUpdater>>(),
     interaction  = React.useRef<ReturnType<typeof registerInteractionHandlers>>(),
 
     { simulation } = useSimulation(data),
-    { createPaperItems, makeItemUpdater, create } = usePaperItems(data),
+    { createPaperItems, getItemUpdater, create } = usePaperItems(data),
     registerInteractionHandlers = useInteractions();
 
   React.useEffect(() => {
@@ -43,11 +42,19 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
         project.current!,
         ref.current!,
         simulation,
+        { onDrag: {
+          // arg: Node (from d3 simulation)
+          // need to find PaperNode here to create/update LinkHints
+          // maybe pass all items (and logic) to interaction
+          start: () => {},
+          observe: () => {},
+          stop: () => {}
+        } }
       );
 
       return () => project.current!.clear();
     },
-    [ref.current, data]
+    [ref.current, data, createPaperItems]
   );
   React.useEffect(setupCanvas, [setupCanvas]);
 
@@ -59,17 +66,16 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
         fillColor,
         center: [ window.innerWidth, 0 ],
         applyMatrix: false,
-        radius: 10,
+        radius: window.innerWidth * 3,
         scale: 1
       });
 
       const duration = 450,
-            scaling = duration,
             delay = 200,
             delayed = duration + delay,
             options = { duration, easing: 'easeInQuad'},
-            from = { scaling: 1 },
-            to = { scaling, fillColor };
+            from = { scaling: 0.001 },
+            to = { scaling: 1, fillColor };
 
       path.sendToBack();
       path.tween(from, to, options);
@@ -80,10 +86,7 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
         .delay(delay)
         .style('background', colors.canvas)
 
-      setTimeout(() => {
-        update.current = makeItemUpdater();
-        path.remove();
-      }, delayed);
+      setTimeout(() => path.remove(), delayed);
     },
     [colors]
   );
@@ -94,12 +97,12 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
     if ( !simulation.nodes().length
       || !items.current
-      || !update.current
       || !interaction.current) return;
 
     const { getMouse, getDraggedNode } = interaction.current,
           mouse = getMouse(),
-          draggedNode = getDraggedNode();
+          draggedNode = getDraggedNode(),
+          update = getItemUpdater()!;
 
     let index = 0;
     for (const d3node of simulation.nodes()) {
@@ -113,25 +116,27 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
       node.position = create.point(d3node);
 
       if (nodeIsHovered || nodeIsDragged) {
+
         if (!label) {
           label
             = items.current![index].label
             = create.label(d3node.id);
         }
+        update.highlight(node, label);
 
-        update.current!.highlight(node, label);
       } else {
-        update.current!.node(d3node, node);
+
+        update.node(d3node, node);
 
         if (label) {
           label
             = items.current![index].label
-            = update.current!.remove(label);
+            = update.remove(label);
         }
       }
 
       for (const [_targetId, { target, path }] of Object.entries(links)) {
-        update.current!.link(nodeIsHovered, d3node, target, path);
+        update.link(nodeIsHovered, d3node, target, path);
       }
 
       ++index;
@@ -147,7 +152,7 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
     window.addEventListener("resize", resizeHandler);
 
     return () => window.removeEventListener("resize", resizeHandler);
-  }, [interaction.current]);
+  }, []);
 
   function fixAspectRatio() {
     const  { devicePixelRatio, innerWidth, innerHeight } = window;
