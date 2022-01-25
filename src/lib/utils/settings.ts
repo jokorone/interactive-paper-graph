@@ -14,7 +14,6 @@ const _DefaultSettings = {
 const _DefaultUpdateSettings = {
   toggleTheme: () => {},
   updateGraphSetting: (key: GraphSettingsEnum, value: number) => {},
-  setColors: () => {}
 }
 
 const DefaultSettingsProps = {
@@ -46,10 +45,6 @@ export const useSettings = (): {
     }));
   }
 
-  React.useEffect(() => {
-
-  }, [theme])
-
   function toggleTheme() {
     window.document.body.classList.remove(theme)
     window.document.body.classList.add(invertTheme(theme))
@@ -60,13 +55,12 @@ export const useSettings = (): {
   return {
     settings: {
       graph: graphSettings,
-      theme: theme || 'dark',
+      theme: theme,
       colors
     },
     updateSettings: {
       updateGraphSetting,
       toggleTheme,
-      setColors: setColors as () => {}
     },
   }
 }

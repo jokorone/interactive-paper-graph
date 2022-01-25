@@ -1,0 +1,30 @@
+{
+  "nodes": [
+    {"id": "PaperJS", "group": 1},
+    {"id": "React", "group": 1},
+    {"id": "D3", "group": 1},
+    {"id": "React Hooks", "group": 1},
+    {"id": "Paper Items", "group": 1},
+    {"id": "Theming", "group": 1},
+    {"id": "PKM", "group": 1}
+  ],
+  "links": [
+    {"source": "D3", "target": "React", "value": 4},
+    {"source": "D3", "target": "PKM", "value": 4},
+    {"source": "D3", "target": "Paper Items", "value": 4},
+    {"source": "PaperJS", "target": "PKM", "value": 10},
+    {"source": "PaperJS", "target": "D3", "value": 6},
+    {"source": "React", "target": "PKM", "value": 1},
+    {"source": "React", "target": "PaperJS", "value": 3},
+    {"source": "React", "target": "D3", "value": 3},
+    {"source": "React", "target": "Theming", "value": 5},
+    {"source": "React Hooks", "target": "React", "value": 1},
+    {"source": "Theming", "target": "Paper Items", "value": 4},
+    {"source": "Paper Items", "target": "PaperJS", "value": 4},
+    {"source": "Paper Items", "target": "Theming", "value": 4},
+    {"source": "PKM", "target": "Paper Items", "value": 3},
+    {"source": "PKM", "target": "D3", "value": 4},
+    {"source": "PaperJS", "target": "React", "value": 7},
+    {"source": "D3", "target": "React", "value": 12}
+  ]
+}

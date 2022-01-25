@@ -1,22 +1,31 @@
 import React from 'react';
 import { Canvas } from "./canvas";
-import { SettingsContainer } from "./settings";
 import { useGraphData } from '../utils/data';
 
 import { SettingsContext, useSettings } from '../utils/settings';
+import { RawNode, RawLink } from './../models';
 
-export const NetworkGraph = React.memo(() => {
-  const { data } = useGraphData(),
-        { settings, updateSettings } = useSettings();
 
-  if (!Object.values(data).length) return <></>;
+type DefaultGraphProps =  {
+  options?: ReturnType<typeof useSettings>,
+  data: {
+    nodes: RawNode[],
+    links: RawLink[]
+  }
+};
+
+export type NetworkGraphProps = {
+  nodes: RawNode[], links: RawLink[]
+}
+export const NetworkGraph = (props: DefaultGraphProps) => {
+  const { data } = useGraphData(props.data);
+  let fallbackSettings = useSettings();
+
+  if (!Object.values(props.data).length) return <></>;
 
   return (
-      <SettingsContext.Provider value={{ settings, updateSettings }}>
-
-        <SettingsContainer/>
+      <SettingsContext.Provider value={props.options || fallbackSettings}>
         <Canvas data={data} />
-
       </SettingsContext.Provider>
   );
-});
+};

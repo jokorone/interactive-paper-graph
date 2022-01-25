@@ -27,9 +27,7 @@ export const GraphSettings: {
 }
 export type GraphSettings = typeof GraphSettings;
 
-export const GraphSettingsInputs: {
-  // [key in GraphSettingsEnum]: GraphSettingInputConfig
-} = {
+export const GraphSettingsInputs = {
   [GraphSettingsEnum.chargeForceStrength]: {
     step: 1,
     min: -200,

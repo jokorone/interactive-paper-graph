@@ -2,14 +2,13 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { PaperModel } from '../../models/paper';
-import { Node, KeyValueContainer } from '../../models';
+import { PaperModel } from '../../lib/models/paper';
+import { Node, KeyValueContainer } from '../../lib/models';
 
-import { useSimulation } from '../../utils/simulation';
-import { usePaperItems } from '../../utils/paper';
-import { useAnimations } from '../../utils/animations';
-import { useInteractions } from '../../utils/interactions';
-import { SettingsContext } from '../../utils/settings';
+import { useSimulation } from '../utils/simulation';
+import { usePaperItems } from '../utils/paper';
+import { useInteractions } from '../utils/interactions';
+import { SettingsContext } from '../utils/settings';
 
 type CanvasProps = {
   data: KeyValueContainer<Node>;
@@ -27,7 +26,6 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
     { simulation } = useSimulation(data),
     { createPaperItems, makeItemUpdater, create } = usePaperItems(data),
-    { changeCanvasTheme } = useAnimations(),
     registerInteractionHandlers = useInteractions();
 
   React.useEffect(() => {
@@ -55,16 +53,41 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
   const updateCanvasTheme = React.useCallback(
     () => {
-      changeCanvasTheme(ref.current!, colors.canvas);
+      const fillColor = colors.paper.canvas;
+
+      const path = new Paper.Path.Circle({
+        fillColor,
+        center: [ window.innerWidth, 0 ],
+        applyMatrix: false,
+        radius: 10,
+        scale: 1
+      });
+
+      const duration = 450,
+            scaling = duration,
+            delay = 200,
+            delayed = duration + delay,
+            options = { duration, easing: 'easeInQuad'},
+            from = { scaling: 1 },
+            to = { scaling, fillColor };
+
+      path.sendToBack();
+      path.tween(from, to, options);
+
+      select(ref.current)
+        .transition()
+        .duration(duration)
+        .delay(delay)
+        .style('background', colors.canvas)
+
       setTimeout(() => {
-        console.log('apply paper colors');
         update.current = makeItemUpdater();
-      }, 200);
+        path.remove();
+      }, delayed);
     },
     [colors]
   );
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
-
 
   function draw() {
     context.current!.clearRect(0, 0, window.innerWidth, window.innerHeight);

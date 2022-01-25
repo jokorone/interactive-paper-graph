@@ -1,16 +1,14 @@
 import React from 'react';
-import jsonData from '../../data/mock.json';
-
-import { Node, RawNode, RawLink, InitialNode, KeyValueContainer  } from '../models';
+import { Node, RawNode, RawLink, KeyValueContainer } from '../models';
 
 export const makeIterable = (key: string) => <T>(value: T): [ string, T ] => [ key, value ];
 
-export const useGraphData = () => {
+export const useGraphData = (source: { nodes: RawNode[], links: RawLink[] }) => {
   const [ data, setData ] = React.useState<KeyValueContainer<Node>>({});
 
   const createModel = React.useCallback(
     () => {
-      setData(fromRawData(jsonData));
+      setData(fromRawData(source));
     },
     []
   );

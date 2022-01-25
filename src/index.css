@@ -21,10 +21,12 @@ code {
 
 @layer components {
   .icon {
-		@apply cursor-pointer w-12 h-12 relative flex items-center justify-center m-2 p-2
-		       rounded-2xl hover:rounded-lg transition-all
-           hover:bg-gray-800 dark:hover:bg-gray-200
-           hover:text-gray-200 dark:hover:text-gray-800;
+		@apply cursor-pointer w-12 h-12 relative
+    flex items-center justify-center m-2 p-2
+    rounded-lg hover:rounded-2xl transition-all hover:scale-110
+    text-gray-900 dark:text-gray-300 fill-gray-800 dark:fill-gray-200
+    hover:bg-gray-900 dark:hover:bg-gray-200
+    hover:text-gray-200 dark:hover:text-gray-900;
 	}
 
 	.tooltip {
@@ -38,19 +40,14 @@ code {
     hover:text-gray-200 dark:hover:text-gray-800;
 	}
 
-  .colored {
-    @apply hover:bg-gray-800 dark:hover:bg-gray-200
-    hover:text-gray-200 dark:hover:text-gray-800;
-  }
-
 	.svg-icon {
-		@apply h-8 w-8  text-gray-800 dark:text-gray-200 hover:bg-gray-800 dark:hover:bg-gray-200
-                    hover:text-gray-200 dark:hover:text-gray-800;
+		@apply h-8 w-8 ;
 	}
 
   canvas {
-    /* allow panning (x,y) & pinch2zoom */
-    touch-action: manipulation;
     overflow: hidden;
   }
+
+  input:focus { box-shadow: none; }
+  button:focus { box-shadow: none; }
 }

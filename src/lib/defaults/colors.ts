@@ -26,7 +26,7 @@ const DarkColors = {
 const LightColors = {
   canvas: '#e7e5e4',
   paper: {
-    primary: new Paper.Color('#e7e5e4'),
+    canvas: new Paper.Color('#e7e5e4'),
     accent: new Paper.Color('#2c2b2c'),
   },
 }
