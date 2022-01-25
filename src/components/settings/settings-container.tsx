@@ -63,7 +63,7 @@ const SliderInput = ({ name, value, config, handler }:{
       <span className='text-gray-900 dark:text-gray-200'>{humanReadable(name)}</span>
       <span className='text-gray-900 dark:text-gray-200 ml-auto'>{value}</span>
     </div>
-    <input type="range" className='appearance-none h-1 w-28 outline-none opacity-70 transition-opacity hover:opacity-100'
+    <input type="range" className='appearance-none h-1 w-max outline-none opacity-70 transition-opacity hover:opacity-100'
       id={name}
       min={config.min}
       max={config.max}

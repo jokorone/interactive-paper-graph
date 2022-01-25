@@ -176,7 +176,7 @@ export const useInteractions = () => {
 
     const
       { view } = project,
-        onZoom = createZoomHandler(view),
+        onZoom = createZoomHandler(view) as any,
         onDrag = createDragHandler(view, simulation, callbacks) as any,
         onMouseMove = createMouseMoveHandler(view);
 
@@ -185,7 +185,7 @@ export const useInteractions = () => {
       .on('click', (e: MouseEvent) => { console.log('x: ', e.clientX, ' | y: ',e.clientY) })
       .on('dblclick.zoom', null)
       .call(onDrag)
-      .call(onZoom as any);
+      .call(onZoom);
 
     return {
       handleResize,

@@ -13,14 +13,13 @@ const PaperDefaults = {
   },
   Link: {
     strokeWidth: 1,
-    opacity: .6,
+    opacity: .4,
   },
 }
 
 export const usePaperItems = (data: KeyValueContainer<Node>) => {
-  const { settings: { colors } } = React.useContext(SettingsContext);
-
-  const itemUpdater = React.useRef<ReturnType<typeof makeItemUpdater>>();
+  const { settings: { colors } } = React.useContext(SettingsContext),
+        itemUpdater = React.useRef<ReturnType<typeof makeItemUpdater>>();
 
   const createPaperItems = React.useCallback(
     () => Object.entries(data).map(([ name, node ]) => {
@@ -71,7 +70,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
       node: _createNode,
       label: _createLabel,
       link: _createLink,
-    }
+    } as const;
   ;
 
   const
@@ -88,7 +87,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
       path.opacity = sourceIsHovered ? 1 : PaperDefaults.Link.opacity;
     },
     _highlight = (node: paper.Path, label: paper.PointText) => {
-      _nodeRadius(node, 5);
+      _nodeRadius(node, PaperDefaults.Node.radius + 2);
       node.opacity = 1;
       label.position = node.position.subtract({ x: 0, y: 12 } as paper.Point);
       label.fillColor = colors.paper.accent;
@@ -107,16 +106,14 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
         link: _updateLink,
         highlight: _highlight,
         remove: _removeItem
-      }),
-      [colors]
+      }) as const,
+      [_updateNode, _updateLink, _highlight, _removeItem]
     )
   ;
 
   React.useEffect(() => {
-    console.log('make updater');
-
     itemUpdater.current = makeItemUpdater();
-  }, [colors]);
+  }, [makeItemUpdater]);
 
   return {
     createPaperItems,

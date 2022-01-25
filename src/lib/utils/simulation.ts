@@ -40,6 +40,7 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
           .strength(graphSettings.collideStrength)
           .radius(graphSettings.collideRadius)
           .iterations(1))
+        // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
           .x(window.innerWidth / 2))
         .force('forceY', forces.forceY

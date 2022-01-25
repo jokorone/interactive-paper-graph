@@ -60,36 +60,13 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
   const updateCanvasTheme = React.useCallback(
     () => {
-      const fillColor = colors.paper.canvas;
-
-      const path = new Paper.Path.Circle({
-        fillColor,
-        center: [ window.innerWidth, 0 ],
-        applyMatrix: false,
-        radius: window.innerWidth * 3,
-        scale: 1
-      });
-
-      const duration = 450,
-            delay = 200,
-            delayed = duration + delay,
-            options = { duration, easing: 'easeInQuad'},
-            from = { scaling: 0.001 },
-            to = { scaling: 1, fillColor };
-
-      path.sendToBack();
-      path.tween(from, to, options);
-
-      select(ref.current)
-        .transition()
-        .duration(duration)
-        .delay(delay)
+      select(ref.current).transition()
+        .duration(200).delay(100)
         .style('background', colors.canvas)
-
-      setTimeout(() => path.remove(), delayed);
     },
     [colors]
   );
+
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
 
   function draw() {
@@ -110,7 +87,7 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
       const { node, links } = items.current![index];
       let label = items.current![index].label;
 
-      const nodeIsHovered = mouse.intersects(node),
+      const nodeIsHovered = mouse.intersects(node) || mouse.contains(node.position),
             nodeIsDragged = d3node.id === draggedNode?.id;
 
       node.position = create.point(d3node);

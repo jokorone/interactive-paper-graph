@@ -50,4 +50,30 @@ code {
 
   input:focus { box-shadow: none; }
   button:focus { box-shadow: none; }
+
+  /*
+  https://stackoverflow.com/questions/41609481/trouble-styling-range-input-thumb
+  input[type=range] {
+    -webkit-appearance: none;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    background: 'green';
+  }
+
+  input[type=range]:hover::-webkit-slider-runnable-track {
+      background: 'blue';
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 3px;
+      width: 100%;
+      background: 'red';
+  }
+
+  input[type=range]:hover::-webkit-slider-thumb {
+      background: 'orange';
+  }
+  */
 }
