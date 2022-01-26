@@ -1,4 +1,4 @@
-import { GraphSettingsEnum, GraphSettingInputConfig } from "../models/settings";
+import { GraphSettingsEnum } from "../models/settings";
 
 export const humanReadable = (key: GraphSettingsEnum) => HumanGraphSettings[key];
 

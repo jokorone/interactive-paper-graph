@@ -1,4 +1,4 @@
-import { SettingsContainer } from './components/settings';
+import { SettingsContainer } from './components';
 import { NetworkGraph, useSettings } from './lib';
 import mockData from './data/mock.json';
 import testData from './data/test.json';

@@ -43,9 +43,6 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
         ref.current!,
         simulation,
         { onDrag: {
-          // arg: Node (from d3 simulation)
-          // need to find PaperNode here to create/update LinkHints
-          // maybe pass all items (and logic) to interaction
           start: () => {},
           observe: () => {},
           stop: () => {}
@@ -146,7 +143,7 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
   }
 
   return (<>
-    {ref.current && <button className='m-2 p-2 fixed bottom-0 right-0' onClick={interaction.current!.reset}>reset</button>}
+    {/* {ref.current && <button className='m-2 p-2 fixed bottom-0 right-0' onClick={interaction.current!.reset}>reset</button>} */}
     <canvas ref={ref}></canvas>
   </>);
 });

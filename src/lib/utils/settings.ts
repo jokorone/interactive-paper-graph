@@ -22,14 +22,11 @@ const DefaultSettingsProps = {
 }
 
 export type UpdateSettings = typeof _DefaultUpdateSettings;
-type SettingsContextProps = typeof DefaultSettingsProps;
+export type Settings = typeof DefaultSettingsProps;
 
-export const SettingsContext = React.createContext<SettingsContextProps>(DefaultSettingsProps);
+export const SettingsContext = React.createContext<Settings>(DefaultSettingsProps);
 
-export const useSettings = (): {
-  settings: typeof _DefaultSettings,
-  updateSettings: UpdateSettings
-} => {
+export const useSettings = (): Settings => {
   const
     [ graphSettings, setGraphSettings ] = React.useState<GraphSettings>(_DefaultSettings.graph),
     [ theme, setTheme ] = React.useState<Theme>(_DefaultSettings.theme),
