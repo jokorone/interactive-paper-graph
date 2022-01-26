@@ -1,16 +1,4 @@
-export type InteractionOptions = {
-  zoomCallback: (transform: d3.ZoomTransform) => void;
-}
-
+import { DefaultInteractionHandlers } from "..";
 
 export type InteractionTypes = 'drag' | 'wheel' | 'zoom' | 'hover';
-
-export const InteractionCallback = {
-  start: () => {},
-  observe: () => {},
-  stop: () => {},
-}
-
-export type InteractionHandlers = {
-  [Key in InteractionTypes as `on${Capitalize<Key>}`]?: typeof InteractionCallback
-}
+export type InteractionHandlers = typeof DefaultInteractionHandlers;

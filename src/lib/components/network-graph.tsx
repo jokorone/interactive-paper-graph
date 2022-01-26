@@ -1,9 +1,10 @@
 import React from 'react';
 import { Canvas } from "./canvas";
-import { useGraphData } from '../utils/data';
 
-import { SettingsContext, useSettings } from '../utils/settings';
-import { RawNode, RawLink, InteractionHandlers } from './../models';
+import { SettingsContext, useGraphData } from '../utils';
+
+import { RawNode, RawLink, NetworkGraphSettingsConfig } from './../models';
+import { DefaultNetworkGraphSettings } from '../defaults';
 
 
 type DefaultGraphProps =  {
@@ -11,20 +12,20 @@ type DefaultGraphProps =  {
     nodes: RawNode[],
     links: RawLink[]
   },
-  options?: ReturnType<typeof useSettings>,
+  config?: NetworkGraphSettingsConfig
 };
 
-export type NetworkGraphProps = {
-  nodes: RawNode[], links: RawLink[]
-}
 export const NetworkGraph = (props: DefaultGraphProps) => {
+  const initialSettings = {
+    ...DefaultNetworkGraphSettings,
+    ...props.config,
+  } as typeof DefaultNetworkGraphSettings;
 
-  const settings = useSettings(props.options),
-        data = useGraphData(props.data),
+  const data = useGraphData(props.data),
         initialized = Object.keys(data).length > 0;
 
   return (
-    <SettingsContext.Provider value={ props?.options || settings }>
+    <SettingsContext.Provider value={initialSettings}>
       {
         initialized &&
           <Canvas data={data} />

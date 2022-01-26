@@ -1,18 +1,17 @@
 import React from 'react';
 
-import { GraphSettingInputConfig, GraphSettingsEnum as GraphSetting } from "../../lib";
-import { GraphSettingsInputs, humanReadable } from "../../lib/defaults/graph-settings";
-import { Settings } from '../../lib';
+import { GraphSettingInputConfig, GraphSettingsEnum as GraphSetting, GraphSettingsInputs, humanReadable } from "../../lib";
 
 import { ReactComponent as SettingsSVG } from './../../icons/settings.svg';
+import { useGraphSettings } from '../../util/graph-settings';
 
-export const GraphSettings = (props: Settings) => {
+export const GraphSettings = (props: ReturnType<typeof useGraphSettings>) => {
 
   const [ visible, setVisible ] = React.useState(false);
 
   const handleGraphSettingsInput = (key: GraphSetting) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      props.updateSettings.updateGraphSetting(key, +event.target.value);
+      props.updateGraphSetting(key, +event.target.value);
     }
   }
 
@@ -25,7 +24,7 @@ export const GraphSettings = (props: Settings) => {
           <React.Fragment key={key}>
             <SliderInput
               name={key}
-              value={props.settings.graph[key]}
+              value={props.graphSettings[key]}
               config={config}
               handler={handleGraphSettingsInput(key)}
             />

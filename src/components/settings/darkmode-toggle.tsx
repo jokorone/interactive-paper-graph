@@ -1,7 +1,7 @@
-import { UpdateSettings } from '../../lib';
+import { useTheme } from '../../util/theme';
 import { ReactComponent as DarkmodeSVG } from './../../icons/darkmode-toggle.svg';
 
-export const DarkmodeToggle = (props: UpdateSettings) => {
+export const DarkmodeToggle = (props: ReturnType<typeof useTheme>) => {
   return (
     <button onClick={props.toggleTheme} className='icon group focus:outline-none outline-none active:outline-none'>
       <DarkmodeSVG />

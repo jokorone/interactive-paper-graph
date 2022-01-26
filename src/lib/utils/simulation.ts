@@ -1,24 +1,34 @@
 import React from 'react';
-import * as d3 from 'd3';
+
+import {
+  SimulationLinkDatum,
+  SimulationNodeDatum,
+  forceSimulation,
+  forceManyBody,
+  forceLink,
+  forceCollide,
+  forceX,
+  forceY
+} from 'd3';
+
 import { Node, Link, KeyValueContainer } from '../models';
-import { SimulationLinkDatum, SimulationNodeDatum } from 'd3';
 import { SettingsContext } from './settings';
 
 export const useSimulation = (data: KeyValueContainer<Node>) => {
-  const { settings: { graph: graphSettings } } = React.useContext(SettingsContext);
+  const { simulation: graphSettings } = React.useContext(SettingsContext);
 
   const simulation = React.useMemo(
-    () => d3.forceSimulation<Node, Link>(),
+    () => forceSimulation<Node, Link>(),
     []
   );
 
   const forces = React.useMemo(
     () => ({
-      forceCharge: d3.forceManyBody(),
-      forceLink: d3.forceLink(),
-      forceCollide: d3.forceCollide(),
-      forceX: d3.forceX(),
-      forceY: d3.forceY(),
+      forceCharge: forceManyBody(),
+      forceLink: forceLink(),
+      forceCollide: forceCollide(),
+      forceX: forceX(),
+      forceY: forceY(),
     }),
     []
   );
@@ -62,6 +72,8 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
             links = _data.flatMap(node => Object.values(node.links) as unknown as SimulationLinkDatum<SimulationNodeDatum>);
 
       if (simulation.nodes().length) {
+        console.log('clear sim');
+
         simulation.nodes([]);
         forces.forceLink.links([]);
       }
@@ -75,5 +87,5 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
   );
   React.useEffect(attachData, [attachData]);
 
-  return { simulation };
+  return simulation;
 }

@@ -5,17 +5,19 @@ import { select } from 'd3';
 import { PaperModel } from '../../lib/models/paper';
 import { Node, KeyValueContainer } from '../../lib/models';
 
-import { useSimulation } from '../utils/simulation';
-import { usePaperItems } from '../utils/paper';
-import { useInteractions } from '../utils/interactions';
-import { SettingsContext } from '../utils/settings';
+import {
+  SettingsContext,
+  useSimulation,
+  usePaperItems,
+  useInteractions
+} from './../utils';
 
 type CanvasProps = {
   data: KeyValueContainer<Node>;
 }
 export const Canvas = React.memo(({ data }: CanvasProps) => {
   const
-    { settings: { colors } } = React.useContext(SettingsContext),
+    { colors, handlers, items: config } = React.useContext(SettingsContext),
 
     ref          = React.useRef<HTMLCanvasElement | null>(null),
     project      = React.useRef<paper.Project | null>(null),
@@ -23,7 +25,7 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
     context      = React.useRef<CanvasRenderingContext2D | null>(),
     interaction  = React.useRef<ReturnType<typeof registerInteractionHandlers>>(),
 
-    { simulation } = useSimulation(data),
+    simulation = useSimulation(data),
     { createPaperItems, getItemUpdater, create } = usePaperItems(data),
     registerInteractionHandlers = useInteractions();
 
@@ -52,6 +54,7 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
   const updateCanvasTheme = React.useCallback(
     () => {
+      console.log('udpate canvas theme');
       select(ref.current).transition()
         .duration(200).delay(100)
         .style('background', colors.canvas)
@@ -86,13 +89,15 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
       if (nodeIsHovered || nodeIsDragged) {
 
-        if (!label) {
+        handlers.onHover && handlers.onHover.call && handlers.onHover.call(d3node);
+
+        if (config.label.show && !label) {
           label
             = items.current![index].label
             = create.label(d3node.id);
         }
-        update.highlight(node, label);
 
+        update.highlight(node, label || undefined);
       } else {
 
         update.node(d3node, node);

@@ -1,4 +1,4 @@
-import { GraphSettingsEnum } from "../models/settings";
+import { Node, GraphSettingsEnum, NetworkGraphSettingsConfig } from "../models";
 
 export const humanReadable = (key: GraphSettingsEnum) => HumanGraphSettings[key];
 
@@ -13,7 +13,7 @@ const HumanGraphSettings = {
   [GraphSettingsEnum.forceY]: 'position (y)',
 };
 
-export const GraphSettings: {
+export const DefaultGraphSettings: {
   [key in GraphSettingsEnum]: number
 } = {
   chargeForceStrength: -120,
@@ -25,7 +25,6 @@ export const GraphSettings: {
   forceX:.65,
   forceY:.5,
 }
-export type GraphSettings = typeof GraphSettings;
 
 export const GraphSettingsInputs = {
   [GraphSettingsEnum.chargeForceStrength]: {
@@ -33,16 +32,21 @@ export const GraphSettingsInputs = {
     min: -200,
     max: 50,
   },
-  // [GraphSettingsEnum.chargeDistanceMin]: {
-  //   step: .1,
-  //   min: 0,
-  //   max: 500,
-  // },
   [GraphSettingsEnum.chargeDistanceMax]: {
     step: 1,
     min: 0,
     max: 1312,
   },
+  [GraphSettingsEnum.linkDistance]: {
+    step: 1,
+    min: 0,
+    max: 100,
+  },
+  // [GraphSettingsEnum.chargeDistanceMin]: {
+  //   step: .1,
+  //   min: 0,
+  //   max: 500,
+  // },
   // [GraphSettingsEnum.collideRadius]: {
   //   step: 1,
   //   min: 0,
@@ -53,11 +57,6 @@ export const GraphSettingsInputs = {
   //   min: 0,
   //   max: 2,
   // },
-  [GraphSettingsEnum.linkDistance]: {
-    step: 1,
-    min: 0,
-    max: 100,
-  },
   // [GraphSettingsEnum.forceX]: {
   //   step: .1,
   //   min: 0,
@@ -69,3 +68,56 @@ export const GraphSettingsInputs = {
   //   max: 100,
   // },
 }
+
+const ZoomHandler = {}
+const PanHandler = {}
+
+const HoverHandler = {
+  call: (node: Node) => {},
+}
+
+const DragHandler = {
+  start: (dragTarget: Node) => {},
+  observe: (dragTarget: Node) => {},
+  stop: () => {},
+}
+
+export const DefaultInteractionHandlers = {
+  onHover: HoverHandler,
+  onDrag: DragHandler,
+  onZoom: ZoomHandler,
+  onPan: PanHandler
+}
+
+
+export const DefaultNetworkGraphSettings = {
+  colors: {
+    canvas: 'black',
+    items: 'white',
+  },
+  items: {
+    node: {
+      radius: 3,
+      opacity: .9,
+      highlight: {
+          radius: 5,
+          opacity: 1,
+      }
+    },
+    links: {
+      stroke: 1,
+      opacity: .5,
+      highlight: {
+        stroke: 1.5,
+        opacity: .9,
+      }
+    },
+    label: {
+      show: true,
+    },
+  },
+  simulation: DefaultGraphSettings as typeof DefaultGraphSettings,
+  handlers: DefaultInteractionHandlers,
+};
+
+export const NetworkGraphSettings = typeof DefaultNetworkGraphSettings;
