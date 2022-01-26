@@ -6,9 +6,8 @@ import { Settings } from '../../lib';
 
 import { ReactComponent as SettingsSVG } from './../../icons/settings.svg';
 
-export const GraphSettings = (
-  props: Settings
-) => {
+export const GraphSettings = (props: Settings) => {
+
   const [ visible, setVisible ] = React.useState(false);
 
   const handleGraphSettingsInput = (key: GraphSetting) => {
@@ -17,25 +16,28 @@ export const GraphSettings = (
     }
   }
 
-  const Settings = <div className='flex flex-row'>
-    { (Object.entries(GraphSettingsInputs) as [
-      [GraphSetting, GraphSettingInputConfig]
-    ]).map(
-      ([ key, config ]) =>
-        <React.Fragment key={key}>
-          <SliderInput
-            name={key}
-            value={props.settings.graph[key]}
-            config={config}
-            handler={handleGraphSettingsInput(key)}
-          />
-        </React.Fragment>
-      )
-    }
-  </div>
+  const Settings = (
+    <div className='flex flex-row'>
+      { (Object.entries(GraphSettingsInputs) as [
+          [GraphSetting, GraphSettingInputConfig]
+        ]).map(
+        ([ key, config ]) =>
+          <React.Fragment key={key}>
+            <SliderInput
+              name={key}
+              value={props.settings.graph[key]}
+              config={config}
+              handler={handleGraphSettingsInput(key)}
+            />
+          </React.Fragment>
+        )
+      }
+    </div>
+  );
 
-  const IconToggle =  <button className="icon group focus:outline-none outline-none active:outline-none"
-      onClick={() => (console.log('toggle'), setVisible(!visible))}>
+  const IconToggle = (
+    <button className="icon group focus:outline-none outline-none active:outline-none"
+      onClick={() => setVisible(!visible)}>
       {
         visible ? 'x' : <>
           <SettingsSVG />
@@ -44,7 +46,8 @@ export const GraphSettings = (
           </span>
         </>
       }
-  </button>
+    </button>
+  );
 
   return (<div className='flex flex-row-reverse'>
     {IconToggle}

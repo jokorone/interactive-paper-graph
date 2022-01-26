@@ -3,29 +3,32 @@ import { Canvas } from "./canvas";
 import { useGraphData } from '../utils/data';
 
 import { SettingsContext, useSettings } from '../utils/settings';
-import { RawNode, RawLink } from './../models';
+import { RawNode, RawLink, InteractionHandlers } from './../models';
 
 
 type DefaultGraphProps =  {
-  options?: ReturnType<typeof useSettings>,
   data: {
     nodes: RawNode[],
     links: RawLink[]
-  }
+  },
+  options?: ReturnType<typeof useSettings>,
 };
 
 export type NetworkGraphProps = {
   nodes: RawNode[], links: RawLink[]
 }
 export const NetworkGraph = (props: DefaultGraphProps) => {
-  const { data } = useGraphData(props.data);
-  let fallbackSettings = useSettings();
 
-  if (!Object.values(props.data).length) return <></>;
+  const settings = useSettings(props.options),
+        data = useGraphData(props.data),
+        initialized = Object.keys(data).length > 0;
 
   return (
-      <SettingsContext.Provider value={props.options || fallbackSettings}>
-        <Canvas data={data} />
-      </SettingsContext.Provider>
+    <SettingsContext.Provider value={ props?.options || settings }>
+      {
+        initialized &&
+          <Canvas data={data} />
+      }
+    </SettingsContext.Provider>
   );
 };

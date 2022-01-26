@@ -25,8 +25,6 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
 
   const attachForces = React.useCallback(
     () => {
-      console.log('attach forces to sim');
-
       simulation
         .force('link', forces.forceLink
           .distance(graphSettings.linkDistance)

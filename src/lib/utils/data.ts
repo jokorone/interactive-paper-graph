@@ -15,7 +15,7 @@ export const useGraphData = (source: { nodes: RawNode[], links: RawLink[] }) => 
 
   React.useEffect(createModel, [createModel]);
 
-  return { data };
+  return data;
 }
 
 export const fromRawData = (data: {

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { GraphSettings } from '../defaults/graph-settings';
 import { GraphSettingsEnum } from '../models/settings';
+import { InteractionHandlers } from '../models/interactions';
 import { Theme } from '../models/theme';
 import { AppColors } from '../defaults/colors';
 
@@ -18,7 +19,8 @@ const _DefaultUpdateSettings = {
 
 const DefaultSettingsProps = {
   settings: _DefaultSettings,
-  updateSettings: _DefaultUpdateSettings
+  updateSettings: _DefaultUpdateSettings,
+  interactionHandlers: {} as InteractionHandlers,
 }
 
 export type UpdateSettings = typeof _DefaultUpdateSettings;
@@ -26,14 +28,17 @@ export type Settings = typeof DefaultSettingsProps;
 
 export const SettingsContext = React.createContext<Settings>(DefaultSettingsProps);
 
-export const useSettings = (): Settings => {
-  const
-    [ graphSettings, setGraphSettings ] = React.useState<GraphSettings>(_DefaultSettings.graph),
-    [ theme, setTheme ] = React.useState<Theme>(_DefaultSettings.theme),
-    [ colors, setColors ] = React.useState<typeof _DefaultSettings.colors>(_DefaultSettings.colors);
+export const useSettings = (preferUserSettings?: Partial<Settings>): Settings => {
+  const initial = preferUserSettings?.settings || _DefaultSettings;
 
-  const invertTheme = (theme: Theme): Theme => theme === 'dark' ? 'light' : 'dark';
-  const invertColors = (theme: Theme) => AppColors[invertTheme(theme)] as typeof _DefaultSettings.colors;
+  const
+    [ graphSettings, setGraphSettings ] = React.useState<GraphSettings>(initial.graph),
+    [ theme, setTheme ] = React.useState<Theme>(initial.theme),
+    [ colors, setColors ] = React.useState<typeof _DefaultSettings.colors>(initial.colors);
+
+  const
+    invertTheme = (theme: Theme): Theme => theme === 'dark' ? 'light' : 'dark',
+    invertColors = (theme: Theme) => AppColors[invertTheme(theme)] as typeof _DefaultSettings.colors;
 
   const updateGraphSetting = (key: GraphSettingsEnum, value: number) => {
     setGraphSettings(settings => ({
@@ -42,22 +47,26 @@ export const useSettings = (): Settings => {
     }));
   }
 
-  function toggleTheme() {
+  const toggleTheme = () => {
     window.document.body.classList.remove(theme)
     window.document.body.classList.add(invertTheme(theme))
     setColors(invertColors(theme));
     setTheme(invertTheme(theme));
   };
 
+  const updateSettings = preferUserSettings?.updateSettings
+    || { updateGraphSetting, toggleTheme };
+
+  const interactionHandlers = preferUserSettings?.interactionHandlers
+    || {};
+
   return {
     settings: {
       graph: graphSettings,
-      theme: theme,
+      theme,
       colors
     },
-    updateSettings: {
-      updateGraphSetting,
-      toggleTheme,
-    },
+    updateSettings,
+    interactionHandlers
   }
 }

@@ -42,16 +42,11 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
         project.current!,
         ref.current!,
         simulation,
-        { onDrag: {
-          start: () => {},
-          observe: () => {},
-          stop: () => {}
-        } }
       );
 
       return () => project.current!.clear();
     },
-    [ref.current, data, createPaperItems]
+    [data]
   );
   React.useEffect(setupCanvas, [setupCanvas]);
 

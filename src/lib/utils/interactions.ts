@@ -5,7 +5,13 @@ import { select } from 'd3';
 import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
 
-import { Link, Node } from '../models';
+import {
+  InteractionCallback as DefaultCallback,
+  InteractionHandlers,
+  Link,
+  Node
+} from '../models';
+import { SettingsContext } from './settings';
 
 const MouseOptions = { position: [0,0], radius: 8, fillColor: new Paper.Color('black'), opacity: .2 };
 
@@ -21,26 +27,6 @@ const InteractionConfig = {
 
 export type DragEvent = d3.D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
-type Gestures = 'drag' | 'wheel' | 'zoom' | 'hover';
-
-type Callback = (...args: any) => any;
-
-type GestureCallbacks = {
-  [Key in Gestures as `on${Capitalize<Key>}`]?: GestureCallback;
-}
-
-const DefaultCallbacks: GestureCallback = {
-  start: () => {},
-  observe: () => {},
-  stop: () => {}
-}
-
-type GestureCallback = {
-  start: Callback,
-  observe: Callback,
-  stop: Callback
-}
-
 const InitialOffsets = {
   zoom: 1, // scale provided by D3s transform event prop k
   pan: {} as paper.Point,
@@ -48,6 +34,8 @@ const InitialOffsets = {
 type InteractionOffsets = typeof InitialOffsets;
 
 export const useInteractions = () => {
+  const handlers = React.useContext(SettingsContext);
+
   const mouse       = React.useRef<paper.Path.Circle>(),
         draggedNode = React.useRef<Node | null>(null);
 
@@ -61,18 +49,19 @@ export const useInteractions = () => {
     setZoomLevel = _setOffsets('zoom');
 
   function createMouseMoveHandler(view: paper.View) {
+    console.log('create mouse');
+
     return ({ x, y }: MouseEvent) => {
       mouse.current!.position = view.viewToProject(new Paper.Point(x, y));
     }
   }
 
   function createZoomHandler(view: paper.View) {
-    const { min, max } = InteractionConfig.Zoom;
-
     const zoomHandler = ({ transform: { k }, ...event }: d3.D3ZoomEvent<HTMLCanvasElement, Node>) => {
       view.zoom = setZoomLevel(k).zoom;
       cancelEvent(event.sourceEvent);
-    }
+    },
+    { min, max } = InteractionConfig.Zoom;
 
     return zoom()
       .scaleExtent([min, max])
@@ -80,8 +69,8 @@ export const useInteractions = () => {
       .on("zoom", zoomHandler);
   }
 
-  function createDragHandler(view: paper.View, simulation: d3.Simulation<Node, Link>, callbacks?: GestureCallbacks) {
-    let { start, observe, stop } = (callbacks && callbacks.onDrag) || DefaultCallbacks;
+  function createDragHandler(view: paper.View, simulation: d3.Simulation<Node, Link>, callbacks?: InteractionHandlers) {
+    const { start, observe, stop } = handlers?.interactionHandlers?.onDrag || DefaultCallback;
 
     const selectDragTarget = () => {
       const { x, y } = mouse.current!.position;
@@ -98,7 +87,7 @@ export const useInteractions = () => {
 
       } else {
 
-        if (!event.active) simulation.alphaTarget(0.3).restart();
+        if (!event.active) simulation.alphaTarget(0.2).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
 
@@ -169,15 +158,14 @@ export const useInteractions = () => {
   return (
     project: paper.Project,
     canvas: HTMLCanvasElement,
-    simulation: d3.Simulation<Node, Link>,
-    callbacks?: GestureCallbacks
+    simulation: d3.Simulation<Node, Link>
   ) => {
     mouse.current = new Paper.Path.Circle(MouseOptions);
 
     const
       { view } = project,
         onZoom = createZoomHandler(view) as any,
-        onDrag = createDragHandler(view, simulation, callbacks) as any,
+        onDrag = createDragHandler(view, simulation) as any,
         onMouseMove = createMouseMoveHandler(view);
 
     select(canvas)
