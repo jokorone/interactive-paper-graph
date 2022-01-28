@@ -19,7 +19,7 @@ export const Canvas = React.memo((
   { data }: CanvasProps
 ) => {
   const
-    { colors, items: config, handlers } = React.useContext(SettingsContext),
+    { colors, items: config } = React.useContext(SettingsContext),
 
     ref          = React.useRef<HTMLCanvasElement | null>(null),
     project      = React.useRef<paper.Project | null>(null),
@@ -128,8 +128,8 @@ export const Canvas = React.memo((
       ++index;
     }
 
-    (frameEvent.count % 24 === 0)
-      && handlers.onHover(highlights.pop());
+    (frameEvent.count % 16 === 0)
+      && interaction.current!.emit(highlights.pop());
   }
 
   React.useEffect(() => {

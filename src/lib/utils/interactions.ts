@@ -8,6 +8,7 @@ import { zoom } from 'd3-zoom';
 import { Link, Node } from '../models';
 
 import { SettingsContext } from './settings';
+import { DefaultInteractionHandlers } from '..';
 
 const MouseOptions = { radius: 5, fillColor: new Paper.Color('black'), opacity: .2 };
 
@@ -167,6 +168,10 @@ export const useInteractions = () => {
     return { isHovered, isDragged };
   }
 
+  const emit = (target: Node | undefined) => {
+    handlers.onHover(target);
+  }
+
   return (
     project: paper.Project,
     canvas: HTMLCanvasElement,
@@ -189,7 +194,8 @@ export const useInteractions = () => {
 
     return {
       onResize,
-      handle: handleInteraction
+      handle: handleInteraction,
+      emit
     }
   }
 }
