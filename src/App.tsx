@@ -33,9 +33,9 @@ function App() {
 
   const handlers = {
     onDrag: {
-      start: (node: Node) => {console.log(node)},
-      observe: (node: Node) => {console.log('observe', node.id)},
-      stop: () => {console.log('end')},
+      start: (node: Node) => {},
+      observe: (node: Node) => {},
+      stop: () => {},
     },
     onHover: (target: Node | undefined) => {
       Promise.resolve().then(() => {
@@ -47,8 +47,9 @@ function App() {
         }
       });
     },
-    onZoom: {},
-    onPan: {},
+    onClick: (pos: [number, number], target?: Node) => {
+      console.log(pos, target?.id);
+    }
   }
 
   const settings = {

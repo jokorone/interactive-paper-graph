@@ -79,7 +79,7 @@ export const Canvas = React.memo((
     const update = getItemUpdater()!;
 
     let index = 0,
-        highlights = [] as Node[];
+        highlights: Node[] = [];
     for (const d3node of simulation.nodes()) {
 
       const { node, links, ...currentItem } = items.current![index];

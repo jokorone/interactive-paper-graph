@@ -5,6 +5,7 @@ import { Node } from './../../lib';
 export const InteractionOutlet = React.memo((
   props: { highlight: Node | null }
 ) => {
+  console.log(props);
 
   if (!props.highlight) {
     return<></>

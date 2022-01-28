@@ -1,14 +1,17 @@
 import Paper from 'paper';
 import React from 'react';
 
-import { select } from 'd3';
 import { drag } from 'd3-drag';
 import { zoom } from 'd3-zoom';
+import {
+  select,
+  Simulation,
+  D3DragEvent, D3ZoomEvent
+} from 'd3';
 
 import { Link, Node } from '../models';
 
 import { SettingsContext } from './settings';
-import { DefaultInteractionHandlers } from '..';
 
 const MouseOptions = { radius: 5, fillColor: new Paper.Color('black'), opacity: .2 };
 
@@ -22,7 +25,7 @@ const InteractionConfig = {
   }
 };
 
-export type DragEvent = d3.D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
+export type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
 const InitialOffsets = {
   zoom: 1, // scale provided by D3s transform event prop k
@@ -34,7 +37,7 @@ export const useInteractions = () => {
   const { handlers } = React.useContext(SettingsContext);
 
   const mouse       = React.useRef<paper.Path.Circle>(),
-        draggedNode = React.useRef<Node | null>(null);
+        draggedNode = React.useRef<Node | null>();
 
   const offsets = React.useRef<InteractionOffsets>(InitialOffsets),
     _setOffsets = (
@@ -52,7 +55,7 @@ export const useInteractions = () => {
   }
 
   function createZoomHandler(view: paper.View) {
-    const zoomHandler = ({ transform: { k }, ...event }: d3.D3ZoomEvent<HTMLCanvasElement, Node>) => {
+    const zoomHandler = ({ transform: { k }, ...event }: D3ZoomEvent<HTMLCanvasElement, Node>) => {
       view.zoom = setZoomLevel(k).zoom;
       cancelEvent(event.sourceEvent);
     },
@@ -64,9 +67,7 @@ export const useInteractions = () => {
       .on("zoom", zoomHandler);
   }
 
-  function createDragHandler(view: paper.View, simulation: d3.Simulation<Node, Link>) {
-    const { start, observe, stop } = handlers.onDrag;
-
+  function createDragHandler(view: paper.View, simulation: Simulation<Node, Link>) {
     const selectDragTarget = (): Node | HTMLCanvasElement => {
       const { x, y } = mouse.current!.position;
 
@@ -75,16 +76,13 @@ export const useInteractions = () => {
     }
 
     const dragstart = (event: DragEvent) => {
-      const target = selectDragTarget();
-
       if (event.subject instanceof HTMLCanvasElement) {
 
         const point = new Paper.Point(Math.floor(event.x), Math.floor(event.y));
         setPanOffset(view.viewToProject(point));
 
       } else {
-
-        start!(target as Node);
+        handlers.onDrag.start(selectDragTarget() as Node);
         if (!event.active) simulation.alphaTarget(0.2).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
@@ -108,7 +106,7 @@ export const useInteractions = () => {
         event.subject.fy = eventPoint.y;
 
         draggedNode.current = event.subject;
-        observe(draggedNode.current);
+        handlers.onDrag.observe(draggedNode.current);
       }
 
       cancelEvent(event.sourceEvent);
@@ -121,7 +119,7 @@ export const useInteractions = () => {
 
       if (draggedNode.current) {
         draggedNode.current = null;
-        stop!();
+        handlers.onDrag.stop();
       }
 
       cancelEvent(event.sourceEvent);
@@ -168,6 +166,16 @@ export const useInteractions = () => {
     return { isHovered, isDragged };
   }
 
+  const createClickHandler = (simulation: Simulation<Node, Link>) => {
+    return () => {
+      const { x, y } = mouse.current!.position,
+         target = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance);
+
+      handlers.onClick([ x, y ], target);
+    }
+  }
+
+
   const emit = (target: Node | undefined) => {
     handlers.onHover(target);
   }
@@ -175,7 +183,7 @@ export const useInteractions = () => {
   return (
     project: paper.Project,
     canvas: HTMLCanvasElement,
-    simulation: d3.Simulation<Node, Link>
+    simulation: Simulation<Node, Link>
   ) => {
     mouse.current = new Paper.Path.Circle(MouseOptions);
 
@@ -183,11 +191,12 @@ export const useInteractions = () => {
       { view } = project,
         onZoom = createZoomHandler(view),
         onDrag = createDragHandler(view, simulation),
-        onMouseMove = createMouseMoveHandler(view);
+        onMouseMove = createMouseMoveHandler(view),
+        onClick = createClickHandler(simulation);
 
     select(canvas)
       .on('mousemove', onMouseMove)
-      .on('click', (e: MouseEvent) => { console.log('x: ', e.clientX, ' | y: ',e.clientY, 'id:', simulation.find(e.x, e.y, 20)?.id ) })
+      .on('click', onClick)
       .on('dblclick.zoom', null)
       .call(onDrag as any)
       .call(onZoom as any);

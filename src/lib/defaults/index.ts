@@ -80,11 +80,14 @@ const DragHandler = {
   stop: () => {},
 }
 
+const ClickHandler = (pos: [number, number], target?: Node) => {}
+
 export const DefaultInteractionHandlers = {
   onHover: HoverHandler,
   onDrag: DragHandler,
   onZoom: ZoomHandler,
-  onPan: PanHandler
+  onPan: PanHandler,
+  onClick: ClickHandler,
 }
 
 
