@@ -1,7 +1,7 @@
 import React from 'react';
 import Paper from 'paper';
 
-import { KeyValueContainer, Node } from '../models';
+import { KeyValueContainer, Node, PaperModel } from '../models';
 
 import { makeIterable } from './data';
 import { SettingsContext } from './settings';
@@ -19,9 +19,10 @@ const PaperDefaults = {
 
 export const usePaperItems = (data: KeyValueContainer<Node>) => {
 
-  const { colors: hexColors, items } = React.useContext(SettingsContext),
-        itemUpdater = React.useRef<ReturnType<typeof makeItemUpdater>>(),
-        colors = React.useRef<paper.Color>();
+  const
+  { colors: hexColors, items } = React.useContext(SettingsContext),
+    itemUpdater = React.useRef<ReturnType<typeof makeItemUpdater>>(),
+    colors = React.useRef<paper.Color>();
 
   const updateColors = React.useCallback(
     () => { colors.current = new Paper.Color(hexColors.items) },
@@ -30,7 +31,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
   React.useEffect(updateColors, [updateColors]);
 
   const createPaperItems = React.useCallback(
-    () => Object.entries(data).map(([ name, node ]) => {
+    (): PaperModel => Object.entries(data).map(([ name, node ]) => {
 
       const d3ToPaperLink = (link: any) => {
         const iterable = makeIterable(link.target.id);
@@ -50,6 +51,12 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
         links: Object.fromEntries(_links),
         label: null,
         hints: null,
+        payload: node,
+        is: {
+          hovered: false,
+          dragged: false,
+          highlight: false,
+        },
       }
     }),
     [data]

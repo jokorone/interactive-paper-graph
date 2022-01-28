@@ -15,9 +15,11 @@ import {
 type CanvasProps = {
   data: KeyValueContainer<Node>;
 }
-export const Canvas = React.memo(({ data }: CanvasProps) => {
+export const Canvas = React.memo((
+  { data }: CanvasProps
+) => {
   const
-    { colors, handlers, items: config } = React.useContext(SettingsContext),
+    { colors, items: config, handlers } = React.useContext(SettingsContext),
 
     ref          = React.useRef<HTMLCanvasElement | null>(null),
     project      = React.useRef<paper.Project | null>(null),
@@ -54,7 +56,6 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
   const updateCanvasTheme = React.useCallback(
     () => {
-      console.log('udpate canvas theme');
       select(ref.current).transition()
         .duration(200).delay(100)
         .style('background', colors.canvas)
@@ -64,32 +65,41 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
 
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
 
-  function draw() {
+  function draw(frameEvent: {
+    count: number,
+    time: number,
+    delta: number,
+  }) {
     context.current!.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     if ( !simulation.nodes().length
       || !items.current
       || !interaction.current) return;
 
-    const { getMouse, getDraggedNode } = interaction.current,
-          mouse = getMouse(),
-          draggedNode = getDraggedNode(),
-          update = getItemUpdater()!;
+    const update = getItemUpdater()!;
 
-    let index = 0;
+    let index = 0,
+        highlights = [] as Node[];
     for (const d3node of simulation.nodes()) {
 
-      const { node, links } = items.current![index];
-      let label = items.current![index].label;
+      const { node, links, ...currentItem } = items.current![index];
 
-      const nodeIsHovered = mouse.intersects(node) || mouse.contains(node.position),
-            nodeIsDragged = d3node.id === draggedNode?.id;
+      let label = currentItem.label;
+
+      const { isHovered, isDragged } = interaction.current.handle(
+        d3node, node
+      );
+
+      currentItem.is = {
+        hovered: isHovered,
+        dragged: isDragged,
+        highlight: isHovered || isDragged,
+      }
 
       node.position = create.point(d3node);
 
-      if (nodeIsHovered || nodeIsDragged) {
-
-        handlers.onHover && handlers.onHover.call && handlers.onHover.call(d3node);
+      if (currentItem.is.highlight) {
+        highlights.push(currentItem.payload);
 
         if (config.label.show && !label) {
           label
@@ -110,16 +120,21 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
       }
 
       for (const [_targetId, { target, path }] of Object.entries(links)) {
-        update.link(nodeIsHovered, d3node, target, path);
+        update.link(isHovered, d3node, target, path);
       }
+
+      items.current![index].is = currentItem.is;
 
       ++index;
     }
+
+    (frameEvent.count % 24 === 0)
+      && handlers.onHover(highlights.pop());
   }
 
   React.useEffect(() => {
     const resizeHandler = () => {
-      interaction.current!.handleResize(project.current!.view)
+      interaction.current!.onResize(project.current!.view)
       fixAspectRatio();
     };
 
@@ -142,8 +157,5 @@ export const Canvas = React.memo(({ data }: CanvasProps) => {
     }
   }
 
-  return (<>
-    {/* {ref.current && <button className='m-2 p-2 fixed bottom-0 right-0' onClick={interaction.current!.reset}>reset</button>} */}
-    <canvas ref={ref}></canvas>
-  </>);
+  return (<canvas ref={ref}></canvas>);
 });

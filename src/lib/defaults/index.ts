@@ -72,9 +72,7 @@ export const GraphSettingsInputs = {
 const ZoomHandler = {}
 const PanHandler = {}
 
-const HoverHandler = {
-  call: (node: Node) => {},
-}
+const HoverHandler = (target: Node | undefined) => {};
 
 const DragHandler = {
   start: (dragTarget: Node) => {},
