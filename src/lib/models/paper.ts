@@ -16,7 +16,7 @@ export type PaperNode = {
     hovered: boolean,
     dragged: boolean,
     highlight: boolean,
-},
+  },
 }
 
 export type PaperModel = PaperNode[];
