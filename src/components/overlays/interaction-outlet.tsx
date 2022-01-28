@@ -17,8 +17,8 @@ export const InteractionOutlet = React.memo((
   //   ))
 
   return (
-    <div className='absolute top-16 left-1/2 transform -translate-x-1/2 text-gray-700 dark:text-gray-300 font-bold'>
-      <span className='text-5xl'>{props.highlight?.id}</span>
+    <div className='pointer-events-none absolute top-16 left-1/2 transform -translate-x-1/2 text-gray-700 dark:text-gray-300 font-bold'>
+      <span className='text-6xl opacity-90'>{props.highlight?.id}</span>
     </div>
   )
 
