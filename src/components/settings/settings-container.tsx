@@ -8,7 +8,6 @@ export const SettingsContainer = (
   ) => {
 
   return(<>
-
     <div className="absolute top-0 right-0">
       <DarkmodeToggle {...props}/>
     </div>
@@ -16,6 +15,5 @@ export const SettingsContainer = (
     <div className='absolute bottom-2 right-0'>
       <GraphSettings {...props}/>
     </div>
-
   </>);
 };

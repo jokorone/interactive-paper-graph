@@ -5,7 +5,7 @@ import testData from './data/test.json';
 
 import { NetworkGraph, Node, NetworkGraphSettingsConfig } from './lib';
 
-import { SettingsContainer } from './components';
+import { Info, SettingsContainer } from './components';
 
 import { Theme, useTheme } from './util/theme';
 import { useGraphSettings } from './util/graph-settings';
@@ -84,6 +84,7 @@ function App() {
     <div className=" p-0 m-0 bg-gray-300 dark:bg-gray-800">
       <InteractionOutlet highlight={highlight}/>
       <SettingsContainer {...handleSettings}/>
+      <Info data={mockData}/>
       <NetworkGraph data={mockData} config={settings} />
     </div>
   );
