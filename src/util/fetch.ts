@@ -1,12 +1,12 @@
 import React from 'react';
 
 const
-  BaseUrl = `https://raw.githubusercontent.com` as const,
-  Owner = `jokorone` as const,
-  Repo = `interactive-paper-graph` as const,
-  SourceBranch = `develop` as const,
-  Location = `docs` as const,
-  ContentURL = `${BaseUrl}/${Owner}/${Repo}/${SourceBranch}/${Location}` as const;
+  BaseUrl      = `https://raw.githubusercontent.com`,
+  Owner        = `jokorone`,
+  Repo         = `interactive-paper-graph`,
+  SourceBranch = `develop`,
+  Location     = `docs`,
+  ContentURL   = `${BaseUrl}/${Owner}/${Repo}/${SourceBranch}/${Location}` as const;
 
 
 export const useFetch = (query: string) => {
