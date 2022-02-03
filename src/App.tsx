@@ -10,6 +10,7 @@ import { SettingsContainer } from './components';
 import { Theme, useTheme } from './util/theme';
 import { useGraphSettings } from './util/graph-settings';
 import { InteractionOutlet } from './components/overlays/interaction-outlet';
+import { MarkdownContent } from './components/content/markdown-content';
 
 
 const AppColors = {
@@ -29,7 +30,9 @@ function App() {
     handleGraphSettings = useGraphSettings(),
     handleSettings = { ...handleTheme, ...handleGraphSettings };
 
-  const [ highlight, setHighlight ] = React.useState<Node | null>(null);
+  const
+    [ highlight, setHighlight ] = React.useState<Node | null>(null),
+    [ selected, setSelected ] = React.useState<Node | null>(null);
 
   const handlers = {
     onDrag: {
@@ -48,7 +51,9 @@ function App() {
       });
     },
     onClick: (pos: [number, number], target?: Node) => {
-      console.log(pos, target?.id);
+      if (target) {
+        setSelected(target)
+      };
     }
   }
 
@@ -82,6 +87,9 @@ function App() {
 
   return (
     <div className=" p-0 m-0 bg-gray-300 dark:bg-gray-800">
+      {/* {
+        selected && <MarkdownContent selected={selected}/>
+      } */}
       <InteractionOutlet highlight={highlight}/>
       <SettingsContainer {...handleSettings}/>
       <NetworkGraph data={mockData} config={settings} />

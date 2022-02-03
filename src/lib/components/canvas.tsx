@@ -25,11 +25,11 @@ export const Canvas = React.memo((
     project      = React.useRef<paper.Project | null>(null),
     items        = React.useRef<PaperModel | null>(null),
     context      = React.useRef<CanvasRenderingContext2D | null>(),
-    interaction  = React.useRef<ReturnType<typeof registerInteractionHandlers>>(),
+    interaction  = React.useRef<ReturnType<typeof registerHandlers>>(),
 
     simulation = useSimulation(data),
-    { createPaperItems, getItemUpdater, create } = usePaperItems(data),
-    registerInteractionHandlers = useInteractions();
+    paper = usePaperItems(data),
+    registerHandlers = useInteractions(data);
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
@@ -39,10 +39,10 @@ export const Canvas = React.memo((
 
   const setupCanvas = React.useCallback(
     () => {
-      items.current = createPaperItems();
+      items.current = paper.createPaperItems();
       project.current!.view.onFrame = draw;
 
-      interaction.current = registerInteractionHandlers(
+      interaction.current = registerHandlers(
         project.current!,
         ref.current!,
         simulation,
@@ -76,7 +76,7 @@ export const Canvas = React.memo((
       || !items.current
       || !interaction.current) return;
 
-    const update = getItemUpdater()!;
+    const update = paper.getItemUpdater()!;
 
     let index = 0,
         highlights: Node[] = [];
@@ -96,7 +96,7 @@ export const Canvas = React.memo((
         highlight: isHovered || isDragged,
       }
 
-      node.position = create.point(d3node);
+      node.position = paper.create.point(d3node);
 
       if (currentItem.is.highlight) {
         highlights.push(currentItem.payload);
@@ -104,7 +104,7 @@ export const Canvas = React.memo((
         if (config.label.show && !label) {
           label
             = items.current![index].label
-            = create.label(d3node.id);
+            = paper.create.label(d3node.id);
         }
 
         update.highlight(node, label || undefined);

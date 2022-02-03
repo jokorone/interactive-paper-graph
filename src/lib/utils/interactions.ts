@@ -9,7 +9,7 @@ import {
   D3DragEvent, D3ZoomEvent
 } from 'd3';
 
-import { Link, Node } from '../models';
+import { KeyValueContainer, Link, Node } from '../models';
 
 import { SettingsContext } from './settings';
 
@@ -33,7 +33,7 @@ const InitialOffsets = {
 }
 type InteractionOffsets = typeof InitialOffsets;
 
-export const useInteractions = () => {
+export const useInteractions = (data: KeyValueContainer<Node>) => {
   const { handlers } = React.useContext(SettingsContext);
 
   const mouse       = React.useRef<paper.Path.Circle>(),
@@ -82,7 +82,7 @@ export const useInteractions = () => {
         setPanOffset(view.viewToProject(point));
 
       } else {
-        handlers.onDrag.start(selectDragTarget() as Node);
+        handlers.onDrag.start(event.subject);
         if (!event.active) simulation.alphaTarget(0.2).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
@@ -168,16 +168,13 @@ export const useInteractions = () => {
 
   const createClickHandler = (simulation: Simulation<Node, Link>) => {
     return () => {
-      const { x, y } = mouse.current!.position,
-         target = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance);
+      const
+      { x, y } = mouse.current!.position,
+        d3node = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance),
+        target = d3node && data[d3node.id];
 
       handlers.onClick([ x, y ], target);
     }
-  }
-
-
-  const emit = (target: Node | undefined) => {
-    handlers.onHover(target);
   }
 
   return (
@@ -204,7 +201,7 @@ export const useInteractions = () => {
     return {
       onResize,
       handle: handleInteraction,
-      emit
+      emit: (target: Node | undefined) => handlers.onHover(target)
     }
   }
 }
