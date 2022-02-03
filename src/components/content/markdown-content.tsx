@@ -4,7 +4,7 @@ import { Node } from './../../lib';
 const
   Owner = `jokorone` as const,
   Repo = `interactive-paper-graph` as const,
-  ContentURL = `https://raw.githubusercontent.com/${Owner}/${Repo}/develop/README.md` as const;
+  ContentURL = `https://raw.githubusercontent.com/${Owner}/${Repo}/develop/docs/about.md` as const;
 
 
 type MarkdownContentProps = {
