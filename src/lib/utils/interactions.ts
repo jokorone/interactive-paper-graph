@@ -96,7 +96,8 @@ export const useInteractions = (data: KeyValueContainer<Node>) => {
 
       if (event.subject instanceof HTMLCanvasElement) {
 
-        const delta = eventPoint.subtract(view.projectToView(offsets.current.pan));
+        const panReference = view.projectToView(offsets.current.pan);
+        const delta = eventPoint.subtract(panReference);
         view.translate(delta);
 
       } else {
