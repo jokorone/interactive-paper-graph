@@ -48,9 +48,9 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x(window.innerWidth / 2))
+          .x(graphSettings.forceX))
         .force('forceY', forces.forceY
-          .y(window.innerHeight / 2));
+          .y(graphSettings.forceY));
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();

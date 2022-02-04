@@ -20,10 +20,10 @@ export const DefaultGraphSettings: {
   chargeDistanceMin: 1,
   chargeDistanceMax: 420,
   collideRadius: 5,
-  collideStrength: .7,
+  collideStrength: 0,
   linkDistance: 35,
-  forceX:.65,
-  forceY:.5,
+  forceX: window.innerWidth * .65,
+  forceY: window.innerHeight * .5,
 }
 
 export const GraphSettingsInputs = {
@@ -42,11 +42,11 @@ export const GraphSettingsInputs = {
     min: 0,
     max: 100,
   },
-  // [GraphSettingsEnum.chargeDistanceMin]: {
-  //   step: .1,
-  //   min: 0,
-  //   max: 500,
-  // },
+  [GraphSettingsEnum.chargeDistanceMin]: {
+    step: .1,
+    min: 0,
+    max: 500,
+  },
   // [GraphSettingsEnum.collideRadius]: {
   //   step: 1,
   //   min: 0,
@@ -57,16 +57,16 @@ export const GraphSettingsInputs = {
   //   min: 0,
   //   max: 2,
   // },
-  // [GraphSettingsEnum.forceX]: {
-  //   step: .1,
-  //   min: 0,
-  //   max: 100,
-  // },
-  // [GraphSettingsEnum.forceY]: {
-  //   step: .1,
-  //   min: 0,
-  //   max: 100,
-  // },
+  [GraphSettingsEnum.forceX]: {
+    step: 1,
+    min: 0,
+    max: window.innerWidth,
+  },
+  [GraphSettingsEnum.forceY]: {
+    step: 1,
+    min: 0,
+    max: window.innerHeight,
+  },
 }
 
 const ZoomHandler = {}

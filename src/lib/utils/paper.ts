@@ -121,7 +121,6 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
       path.scale(newRadiusWithoutStroke / oldRadiusWithoutStroke);
     },
     _removeItem = (item: paper.Item) => (item.remove(), null),
-
     makeItemUpdater = React.useCallback(
       () => ({
         node: _updateNode,
