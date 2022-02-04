@@ -20,9 +20,16 @@ code {
 }
 
 @layer components {
+  * {
+    @apply outline-none border-transparent focus:border-transparent
+    focus:ring-1
+    focus:ring-inset
+    focus:ring-current;
+  }
+
   .icon {
 		@apply cursor-pointer w-12 h-12 relative
-    focus:outline-hidden
+    group-focus:ring-0
     flex items-center justify-center m-2 p-2
     rounded-lg hover:rounded-2xl transition-all hover:scale-110
     text-gray-900 dark:text-gray-300

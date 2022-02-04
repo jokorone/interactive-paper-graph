@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-// import remarkGFM from 'remark-gfm';
+import remarkGFM from 'remark-gfm';
 
 import { useFetch } from '../../util/fetch';
 import { Node } from './../../lib';
@@ -15,7 +15,7 @@ export const MarkdownContent = React.memo((props: MarkdownContentProps) => {
     <article className="prose prose-gray prose-sm xl:prose-base dark:prose-invert">
 
       <ReactMarkdown
-        // remarkPlugins={[remarkGFM]}
+        remarkPlugins={[remarkGFM]}
         children={content}
       />
 
