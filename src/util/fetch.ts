@@ -36,7 +36,6 @@ export const useFetch = (query: string) => {
         setStatus('fetched');
         cache.current[query] = _content;
         setContent(_content);
-
       }
     }
 

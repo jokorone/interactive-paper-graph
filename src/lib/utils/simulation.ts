@@ -1,8 +1,6 @@
 import React from 'react';
 
 import {
-  SimulationLinkDatum,
-  SimulationNodeDatum,
   forceSimulation,
   forceManyBody,
   forceLink,
@@ -39,7 +37,7 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
         .force('link', forces.forceLink
           .distance(graphSettings.linkDistance)
           .iterations(1)
-          .id((l: any) => l.id))
+          .id(({ id }: any) => id ))
         .force('charge', forces.forceCharge
           .strength(graphSettings.chargeForceStrength)
           .distanceMin(graphSettings.chargeDistanceMin)
@@ -69,11 +67,9 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
 
       const _data = Object.values(data),
             nodes = _data.map(createNode) as Node[],
-            links = _data.flatMap(node => Object.values(node.links) as unknown as SimulationLinkDatum<SimulationNodeDatum>);
+            links = _data.flatMap(node => Object.values(node.links));
 
       if (simulation.nodes().length) {
-        console.log('clear sim');
-
         simulation.nodes([]);
         forces.forceLink.links([]);
       }

@@ -202,7 +202,7 @@ export const useInteractions = (data: KeyValueContainer<Node>) => {
     return {
       onResize,
       handle: handleInteraction,
-      emit: (target: Node | undefined) => handlers.onHover(target)
+      emit: handlers.onHover
     }
   }
 }
