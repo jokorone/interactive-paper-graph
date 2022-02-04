@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/interactive-paper-graph/static/css/main.ddb4bbb3.css",
-    "main.js": "/interactive-paper-graph/static/js/main.c2e4e2cb.js",
+    "main.css": "/interactive-paper-graph/static/css/main.e1db4f48.css",
+    "main.js": "/interactive-paper-graph/static/js/main.d733c408.js",
     "static/media/darkmode-toggle.svg": "/interactive-paper-graph/static/media/darkmode-toggle.cccaaf3a6742521f327895fd001a0af0.svg",
     "index.html": "/interactive-paper-graph/index.html",
     "static/media/settings.svg": "/interactive-paper-graph/static/media/settings.7fc0da1354dda508e86f38f33c757361.svg",
-    "main.ddb4bbb3.css.map": "/interactive-paper-graph/static/css/main.ddb4bbb3.css.map",
-    "main.c2e4e2cb.js.map": "/interactive-paper-graph/static/js/main.c2e4e2cb.js.map"
+    "main.e1db4f48.css.map": "/interactive-paper-graph/static/css/main.e1db4f48.css.map",
+    "main.d733c408.js.map": "/interactive-paper-graph/static/js/main.d733c408.js.map"
   },
   "entrypoints": [
-    "static/css/main.ddb4bbb3.css",
-    "static/js/main.c2e4e2cb.js"
+    "static/css/main.e1db4f48.css",
+    "static/js/main.d733c408.js"
   ]
 }
