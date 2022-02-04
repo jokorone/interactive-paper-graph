@@ -10,7 +10,7 @@
 
   .icon {
 		@apply cursor-pointer w-12 h-12 relative
-    group-focus:ring-0
+    group-focus:ring-0 group-active:ring-0
     flex items-center justify-center m-2 p-2
     rounded-lg hover:rounded-2xl transition-all hover:scale-110
     text-gray-900 dark:text-gray-300

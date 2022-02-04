@@ -1,4 +1,4 @@
-import { Node, GraphSettingsEnum, NetworkGraphSettingsConfig } from "../models";
+import { Node, GraphSettingsEnum } from "../models";
 
 export const humanReadable = (key: GraphSettingsEnum) => HumanGraphSettings[key];
 

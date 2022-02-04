@@ -63,10 +63,8 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
 
   const attachData = React.useCallback(
     () => {
-      const createNode = ({ id, group }: Node) => ({ id, group });
-
       const _data = Object.values(data),
-            nodes = _data.map(createNode) as Node[],
+            nodes = _data.map(node => node.payload as Node),
             links = _data.flatMap(node => Object.values(node.links));
 
       if (simulation.nodes().length) {
