@@ -6,17 +6,6 @@ import { KeyValueContainer, Node, PaperModel } from '../models';
 import { makeIterable } from './data';
 import { SettingsContext } from './settings';
 
-const PaperDefaults = {
-  Node: {
-    radius: 4,
-    opacity: .8,
-  },
-  Link: {
-    strokeWidth: 1,
-    opacity: .4,
-  },
-}
-
 export const usePaperItems = (data: KeyValueContainer<Node>) => {
 
   const
@@ -61,7 +50,6 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
     }),
     [data]
   );
-
 
   const
     _createPoint = (p: d3.SimulationNodeDatum) => new Paper.Point(p),

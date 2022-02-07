@@ -19,17 +19,13 @@ export const usePan = () => {
 
     const panning = (e: DragEvent) => {
       const
-        eventPoint = new Paper.Point(e.x, e.y),
         panReference = view.projectToView(offset.current),
-        delta = eventPoint.subtract(panReference);
+        delta = new Paper.Point(e.x, e.y).subtract(panReference);
 
       view.translate(delta);
     }
 
-    const panstop = (e: DragEvent) => {
-
-    }
-
+    const panstop = (e: DragEvent) => {}
 
     return { panstart, panning, panstop }
   }

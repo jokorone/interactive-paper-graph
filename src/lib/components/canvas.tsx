@@ -2,8 +2,7 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { PaperModel } from '../../lib/models/paper';
-import { Node, KeyValueContainer } from '../../lib/models';
+import { Node, KeyValueContainer, PaperModel } from './../models';
 
 import {
   SettingsContext,

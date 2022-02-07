@@ -70,9 +70,7 @@ export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
     }
 
     const stop = (event: DragEvent) => {
-      [onPan.panstop, onDrag.dragstop]
-        .map(cb => cb(event));
-
+      [onPan.panstop, onDrag.dragstop].map(cb => cb(event));
       cancelEvent(event.sourceEvent);
     }
 

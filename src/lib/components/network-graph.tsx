@@ -3,9 +3,8 @@ import { Canvas } from "./canvas";
 
 import { SettingsContext, useGraphData } from '../utils';
 
-import { RawNode, RawLink, NetworkGraphSettingsConfig } from './../models';
+import { RawNode, RawLink } from './../models';
 import { DefaultNetworkGraphSettings } from '../defaults';
-
 
 type DefaultGraphProps =  {
   data: {
@@ -30,8 +29,7 @@ export const NetworkGraph = (props: DefaultGraphProps) => {
   return (
     <SettingsContext.Provider value={initialSettings}>
       {
-        initialized &&
-          <Canvas data={data} />
+        initialized && <Canvas data={data} />
       }
     </SettingsContext.Provider>
   );
