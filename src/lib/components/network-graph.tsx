@@ -12,17 +12,23 @@ type DefaultGraphProps =  {
     nodes: RawNode[],
     links: RawLink[]
   },
-  config?: NetworkGraphSettingsConfig
+  simulation?: typeof DefaultNetworkGraphSettings.simulation,
+  items?: typeof DefaultNetworkGraphSettings.items,
+  colors?: typeof DefaultNetworkGraphSettings.colors,
+  handlers?: typeof DefaultNetworkGraphSettings.handlers,
 };
 
 export const NetworkGraph = (props: DefaultGraphProps) => {
-  const initialSettings = {
-    ...DefaultNetworkGraphSettings,
-    ...props.config,
-  } as typeof DefaultNetworkGraphSettings;
+  const
+    data = useGraphData(props.data),
+    initialized = Object.keys(data).length > 0,
+    initialSettings = {
+      ...DefaultNetworkGraphSettings,
+      ...props
+    } as typeof DefaultNetworkGraphSettings;
 
-  const data = useGraphData(props.data),
-        initialized = Object.keys(data).length > 0;
+  console.log(initialSettings);
+
 
   return (
     <SettingsContext.Provider value={initialSettings}>

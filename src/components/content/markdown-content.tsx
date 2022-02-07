@@ -11,7 +11,7 @@ type MarkdownContentProps = {
 export const MarkdownContent = React.memo((props: MarkdownContentProps) => {
   const { status, content } = useFetch('markdown-test');
 
-  return <div className="absolute overflow-scroll p-2 max-w-lg m-0 h-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+  return <div className="absolute overflow-scroll p-2 m-0 max-w-lg h-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
     <article className="prose prose-gray prose-sm xl:prose-base dark:prose-invert">
 
       <ReactMarkdown

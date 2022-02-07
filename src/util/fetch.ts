@@ -11,13 +11,12 @@ const
 
 export const useFetch = (query: string) => {
   const
-    cache = React.useRef<{ [url: string]: string }>({}),
+    cache = React.useRef<{ [contentId: string]: string }>({}),
 
     [ status, setStatus ] = React.useState<'fetching' | 'fetched'>(),
     [ content, setContent ] = React.useState<string>('');
 
   const url = (file: string) => `${ContentURL}/${file}.md`;
-
 
   React.useEffect(() => {
     const fetchContent = async () => {

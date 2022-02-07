@@ -36,9 +36,19 @@ function App() {
 
   const handlers = {
     onDrag: {
-      start: (node: Node) => {},
-      observe: (node: Node) => {},
-      stop: () => {},
+      dragstart: (node: Node) => {},
+      dragging: (node: Node) => {},
+      dragstop: () => {},
+    },
+    onPan: {
+      panstart: () => {},
+      panning: () => {},
+      panstop: () => {},
+    },
+    onZoom: {
+      zoomstart: () => {},
+      zooming: () => {},
+      zoomstop: () => {},
     },
     onHover: (target: Node | undefined) => {
       Promise.resolve().then(() => {
@@ -54,13 +64,12 @@ function App() {
       if (target) {
         setSelected(target)
       };
-    }
+    },
   }
 
   const settings = {
     colors: AppColors[handleTheme.theme],
-    handlers,
-    simulation: handleGraphSettings.graphSettings,
+    simulation: handleSettings.graphSettings,
     items: {
       node: {
         radius: 4,
@@ -82,7 +91,7 @@ function App() {
         show: false
       }
     }
-  } as NetworkGraphSettingsConfig;
+  };
 
 
   return (
@@ -92,7 +101,14 @@ function App() {
       }
       <InteractionOutlet highlight={highlight}/>
       <SettingsContainer {...handleSettings}/>
-      <NetworkGraph data={mockData} config={settings} />
+
+      <NetworkGraph
+        data={mockData}
+        colors={settings.colors}
+        handlers={handlers}
+        simulation={settings.simulation}
+        items={settings.items}
+      />
     </div>
   );
 }

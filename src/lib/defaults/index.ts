@@ -22,8 +22,8 @@ export const DefaultGraphSettings: {
   collideRadius: 5,
   collideStrength: 0,
   linkDistance: 35,
-  forceX: window.innerWidth * .65,
-  forceY: window.innerHeight * .5,
+  forceX: Math.floor(window.innerWidth * .65),
+  forceY: Math.floor(window.innerHeight * .5),
 }
 
 export const GraphSettingsInputs = {
@@ -60,24 +60,33 @@ export const GraphSettingsInputs = {
   [GraphSettingsEnum.forceX]: {
     step: 1,
     min: 0,
-    max: window.innerWidth,
+    max: window.innerWidth * 1.75,
   },
   [GraphSettingsEnum.forceY]: {
     step: 1,
     min: 0,
-    max: window.innerHeight,
+    max: window.innerHeight * 1.75,
   },
 }
 
-const ZoomHandler = {}
-const PanHandler = {}
+const ZoomHandler = {
+  zoomstart: () => {},
+  zooming: () => {},
+  zoomstop: () => {}
+}
+
+const PanHandler = {
+  panstart: () => {},
+  panning: () => {},
+  panstop: () => {},
+}
 
 const HoverHandler = (target: Node | undefined) => {};
 
 const DragHandler = {
-  start: (dragTarget: Node) => {},
-  observe: (dragTarget: Node) => {},
-  stop: () => {},
+  dragstart: (dragTarget: Node) => {},
+  dragging: (dragTarget: Node) => {},
+  dragstop: () => {},
 }
 
 const ClickHandler = (pos: [number, number], target?: Node) => {}

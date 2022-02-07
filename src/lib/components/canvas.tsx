@@ -21,15 +21,15 @@ export const Canvas = React.memo((
   const
     { colors, items: config } = React.useContext(SettingsContext),
 
-    ref          = React.useRef<HTMLCanvasElement | null>(null),
-    project      = React.useRef<paper.Project | null>(null),
-    items        = React.useRef<PaperModel | null>(null),
-    context      = React.useRef<CanvasRenderingContext2D | null>(),
-    interaction  = React.useRef<ReturnType<typeof registerHandlers>>(),
+    ref            = React.useRef<HTMLCanvasElement | null>(null),
+    project        = React.useRef<paper.Project | null>(),
+    items          = React.useRef<PaperModel | null>(),
+    context        = React.useRef<CanvasRenderingContext2D | null>(),
+    interaction    = React.useRef<ReturnType<typeof initHandlers>>(),
 
-    simulation = useSimulation(data),
-    paper = usePaperItems(data),
-    registerHandlers = useInteractions(data);
+    simulation     = useSimulation(data),
+    paper          = usePaperItems(data),
+    initHandlers  = useInteractions(data);
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
@@ -42,10 +42,10 @@ export const Canvas = React.memo((
       items.current = paper.createPaperItems();
       project.current!.view.onFrame = draw;
 
-      interaction.current = registerHandlers(
+      interaction.current = initHandlers(
         project.current!,
         ref.current!,
-        simulation,
+        simulation
       );
 
       return () => project.current!.clear();
@@ -57,8 +57,8 @@ export const Canvas = React.memo((
   const updateCanvasTheme = React.useCallback(
     () => {
       select(ref.current).transition()
-        .duration(200).delay(100)
-        .style('background', colors.canvas)
+        .duration(100)
+        .style('background', colors.canvas);
     },
     [colors]
   );
@@ -134,7 +134,6 @@ export const Canvas = React.memo((
 
   React.useEffect(() => {
     const resizeHandler = () => {
-      interaction.current!.onResize(project.current!.view)
       fixAspectRatio();
     };
 
