@@ -8,13 +8,12 @@ import {
   D3DragEvent
 } from 'd3';
 
-import { KeyValueContainer, Link, Node } from '../models';
+import { KeyValueContainer, Link, Node } from './../../models';
 
-import { SettingsContext } from './settings';
-import { useZoom } from './zoom';
-import { useMouse } from './mouse';
-import { usePan } from './pan';
-import { useDrag } from './drag';
+import { SettingsContext } from './../settings';
+import { useZoom, useMouse, usePan, useDrag } from './../interactions';
+
+import { cancelEvent } from './../helpers';
 
 const InteractionConfig = {
   Zoom: {
@@ -28,7 +27,7 @@ const InteractionConfig = {
 
 export type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
-export const useInteractions = (data: KeyValueContainer<Node>) => {
+export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
   const
     { handlers } = React.useContext(SettingsContext),
     { mouse,
@@ -36,7 +35,7 @@ export const useInteractions = (data: KeyValueContainer<Node>) => {
       createMouseMoveHandler } = useMouse(),
     { draggedNode,
       createDragHandler } = useDrag(),
-      createZoomHandler = useZoom(cancelEvent),
+      createZoomHandler = useZoom(),
       createPanHandler = usePan();
 
   function dragOrPan(
@@ -82,12 +81,6 @@ export const useInteractions = (data: KeyValueContainer<Node>) => {
       .on('start', start)
       .on('drag', observe)
       .on('end', stop);
-  }
-
-  function cancelEvent(e: Event) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    e.stopPropagation();
   }
 
   const handleInteraction = (

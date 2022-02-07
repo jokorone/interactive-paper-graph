@@ -3,7 +3,8 @@ import React from 'react';
 import { D3ZoomEvent } from 'd3';
 import { zoom } from 'd3-zoom';
 
-import { Node } from '../models';
+import { Node } from '../../models';
+import { cancelEvent } from './../helpers';
 
 const InteractionConfig = {
   Zoom: {
@@ -15,8 +16,7 @@ const InteractionConfig = {
   }
 };
 
-export const useZoom = (cancelEvent: (e: Event) => void) => {
-
+export const useZoom = () => {
   const scale = React.useRef<number>(1);
 
   function createZoomHandler(view: paper.View) {

@@ -67,10 +67,10 @@ function App() {
     },
   }
 
-  const settings = {
-    colors: AppColors[handleTheme.theme],
-    simulation: handleSettings.graphSettings,
-    items: {
+  const
+    colors = AppColors[handleTheme.theme],
+    simulation = handleSettings.graphSettings,
+    items = {
       node: {
         radius: 4,
         opacity: .8,
@@ -90,9 +90,7 @@ function App() {
       label: {
         show: false
       }
-    }
-  };
-
+    };
 
   return (
     <div className="bg-gray-300 dark:bg-gray-800">
@@ -104,10 +102,10 @@ function App() {
 
       <NetworkGraph
         data={mockData}
-        colors={settings.colors}
+        colors={colors}
         handlers={handlers}
-        simulation={settings.simulation}
-        items={settings.items}
+        simulation={simulation}
+        items={items}
       />
     </div>
   );

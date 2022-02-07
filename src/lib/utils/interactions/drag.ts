@@ -4,8 +4,8 @@ import Paper from "paper";
 import { D3DragEvent, drag } from "d3-drag";
 import { Simulation } from "d3-force";
 
-import { SettingsContext } from ".";
-import { Node, Link } from './../models';
+import { SettingsContext } from "./../";
+import { Node, Link } from './../../models';
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 

@@ -2,7 +2,7 @@ import React from "react";
 import Paper from "paper";
 
 import { D3DragEvent } from "d3-drag";
-import { Node } from "./../models";
+import { Node } from "./../../models";
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 

@@ -9,7 +9,7 @@ import {
   SettingsContext,
   useSimulation,
   usePaperItems,
-  useInteractions
+  useInteractiveGraph
 } from './../utils';
 
 type CanvasProps = {
@@ -29,7 +29,7 @@ export const Canvas = React.memo((
 
     simulation     = useSimulation(data),
     paper          = usePaperItems(data),
-    initHandlers  = useInteractions(data);
+    initHandlers   = useInteractiveGraph(data);
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
