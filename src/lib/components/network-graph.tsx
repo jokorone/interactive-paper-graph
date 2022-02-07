@@ -27,9 +27,6 @@ export const NetworkGraph = (props: DefaultGraphProps) => {
       ...props
     } as typeof DefaultNetworkGraphSettings;
 
-  console.log(initialSettings);
-
-
   return (
     <SettingsContext.Provider value={initialSettings}>
       {
