@@ -5,7 +5,7 @@ import { Canvas } from "./canvas";
 import { deepmerge } from 'deepmerge-ts'
 import { SettingsContext, useGraphData } from '../utils';
 
-import { RawNode, RawLink } from './../models';
+import { RawNode, RawLink, GraphSettingsEnum, InteractionHandlers } from './../models';
 import { DefaultNetworkGraphSettings } from '../defaults';
 
 type DefaultGraphProps =  {
@@ -38,7 +38,7 @@ type DefaultGraphProps =  {
     };
     graph?: typeof DefaultNetworkGraphSettings.config.graph
   },
-  handlers?: Partial<typeof DefaultNetworkGraphSettings.handlers>,
+  handlers?: InteractionHandlers,
 };
 export const NetworkGraph = (props: DefaultGraphProps) => {
 

@@ -4,12 +4,11 @@ import mockData from './data/mock.json';
 import { NetworkGraph, Node } from './lib';
 import { SettingsContainer } from './components';
 
-import { Theme, useTheme } from './util/theme';
+import { useTheme } from './util/theme';
 import { useGraphSettings } from './util/graph-settings';
 import { InteractionOutlet } from './components/overlays/interaction-outlet';
 import { MarkdownContent } from './components/content/markdown-content';
 import { useColors } from './util/colors';
-
 
 function App() {
   const
@@ -29,11 +28,11 @@ function App() {
       dragging: (node: Node) => {console.log('dragging')},
       dragstop: () => {console.log('dragstop')},
     },
-    onPan: {
-      panstart: () => {console.log('panstart')},
-      panning: () => {console.log('panning')},
-      panstop: () => {console.log('panstop')},
-    },
+    // onPan: {
+    //   panstart: () => {console.log('panstart')},
+    //   panning: () => {console.log('panning')},
+    //   panstop: () => {console.log('panstop')},
+    // },
     onZoom: {
       zoomstart: () => {console.log('zoomstart')},
       zooming: () => {console.log('zooming')},
@@ -91,15 +90,15 @@ function App() {
         data={mockData}
         config={{
           colors,
-          paper: {
-            label: {
-              show: false
-            }
-          }
+          graph: {
+            updateSettings: handleSettings.updateGraphSetting,
+            settings: settings.graph
+          },
+          paper: settings.paper
         }}
         handlers={{
           hover: { handle: handlers.onHover },
-          pan: { use: 'paper', handle: handlers.onPan }
+          pan: { use: 'paper' }
         }}
       />
     </div>

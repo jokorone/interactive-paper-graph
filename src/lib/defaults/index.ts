@@ -111,7 +111,6 @@ export const DefaultInteractionHandlers = {
   }
 }
 
-
 export const DefaultNetworkGraphSettings = {
   config: {
     colors: {
@@ -139,7 +138,10 @@ export const DefaultNetworkGraphSettings = {
         show: true,
       },
     },
-    graph: DefaultGraphSettings as typeof DefaultGraphSettings,
+    graph: {
+      updateSettings: (key: GraphSettingsEnum, value: number) => {},
+      settings: DefaultGraphSettings as typeof DefaultGraphSettings
+    },
   },
   handlers: DefaultInteractionHandlers,
 };

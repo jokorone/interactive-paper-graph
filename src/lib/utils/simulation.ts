@@ -13,7 +13,7 @@ import { Node, Link, KeyValueContainer } from '../models';
 import { SettingsContext } from './settings';
 
 export const useSimulation = (data: KeyValueContainer<Node>) => {
-  const { config: { graph: settings } } = React.useContext(SettingsContext);
+  const { config: { graph: { settings } } } = React.useContext(SettingsContext);
 
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
