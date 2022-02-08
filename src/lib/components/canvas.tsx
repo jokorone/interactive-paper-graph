@@ -17,8 +17,7 @@ type CanvasProps = {
 export const Canvas = React.memo((
   { data }: CanvasProps
 ) => {
-  const
-    { colors, items: config } = React.useContext(SettingsContext),
+  const { config } = React.useContext(SettingsContext),
 
     ref            = React.useRef<HTMLCanvasElement | null>(null),
     project        = React.useRef<paper.Project | null>(),
@@ -57,9 +56,9 @@ export const Canvas = React.memo((
     () => {
       select(ref.current).transition()
         .duration(100)
-        .style('background', colors.canvas);
+        .style('background', config.colors.canvas);
     },
-    [colors]
+    [config.colors]
   );
 
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
@@ -100,7 +99,7 @@ export const Canvas = React.memo((
       if (currentItem.is.highlight) {
         highlights.push(currentItem.payload);
 
-        if (config.label.show && !label) {
+        if (config.paper.label.show && !label) {
           label
             = items.current![index].label
             = paper.create.label(d3node.id);

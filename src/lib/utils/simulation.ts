@@ -13,7 +13,7 @@ import { Node, Link, KeyValueContainer } from '../models';
 import { SettingsContext } from './settings';
 
 export const useSimulation = (data: KeyValueContainer<Node>) => {
-  const { simulation: graphSettings } = React.useContext(SettingsContext);
+  const { config: { graph: settings } } = React.useContext(SettingsContext);
 
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
@@ -35,29 +35,29 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
     () => {
       simulation
         .force('link', forces.forceLink
-          .distance(graphSettings.linkDistance)
+          .distance(settings.linkDistance)
           .iterations(1)
           .id(({ id }: any) => id ))
         .force('charge', forces.forceCharge
-          .strength(graphSettings.chargeForceStrength)
-          .distanceMin(graphSettings.chargeDistanceMin)
-          .distanceMax(graphSettings.chargeDistanceMax))
+          .strength(settings.chargeForceStrength)
+          .distanceMin(settings.chargeDistanceMin)
+          .distanceMax(settings.chargeDistanceMax))
         .force('collide', forces.forceCollide
-          .strength(graphSettings.collideStrength)
-          .radius(graphSettings.collideRadius)
+          .strength(settings.collideStrength)
+          .radius(settings.collideRadius)
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x(graphSettings.forceX))
+          .x(settings.forceX))
         .force('forceY', forces.forceY
-          .y(graphSettings.forceY));
+          .y(settings.forceY));
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();
 
       return () => simulation.restart() && void 0;
     },
-    [simulation, forces, graphSettings]
+    [simulation, forces, settings]
   );
   React.useEffect(attachForces, [attachForces]);
 

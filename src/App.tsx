@@ -1,32 +1,20 @@
 import React from 'react';
 
 import mockData from './data/mock.json';
-import testData from './data/test.json';
-
-import { NetworkGraph, Node, NetworkGraphSettingsConfig } from './lib';
-
+import { NetworkGraph, Node } from './lib';
 import { SettingsContainer } from './components';
 
 import { Theme, useTheme } from './util/theme';
 import { useGraphSettings } from './util/graph-settings';
 import { InteractionOutlet } from './components/overlays/interaction-outlet';
 import { MarkdownContent } from './components/content/markdown-content';
+import { useColors } from './util/colors';
 
-
-const AppColors = {
-  ['dark' as Theme]: {
-    canvas: '#2c2b2c',
-    items: '#d6d3d1'
-  },
-  ['light' as Theme]: {
-    canvas: '#d6d3d1',
-    items: '#2c2b2c'
-  }
-}
 
 function App() {
   const
     handleTheme = useTheme(),
+    colors = useColors(handleTheme.theme),
     handleGraphSettings = useGraphSettings(),
     handleSettings = { ...handleTheme, ...handleGraphSettings };
 
@@ -35,20 +23,21 @@ function App() {
     [ selected, setSelected ] = React.useState<Node | null>(null);
 
   const handlers = {
+
     onDrag: {
-      dragstart: (node: Node) => {},
-      dragging: (node: Node) => {},
-      dragstop: () => {},
+      dragstart: (node: Node) => {console.log('dragstart')},
+      dragging: (node: Node) => {console.log('dragging')},
+      dragstop: () => {console.log('dragstop')},
     },
     onPan: {
-      panstart: () => {},
-      panning: () => {},
-      panstop: () => {},
+      panstart: () => {console.log('panstart')},
+      panning: () => {console.log('panning')},
+      panstop: () => {console.log('panstop')},
     },
     onZoom: {
-      zoomstart: () => {},
-      zooming: () => {},
-      zoomstop: () => {},
+      zoomstart: () => {console.log('zoomstart')},
+      zooming: () => {console.log('zooming')},
+      zoomstop: () => {console.log('zoomstop')},
     },
     onHover: (target: Node | undefined) => {
       Promise.resolve().then(() => {
@@ -61,16 +50,13 @@ function App() {
       });
     },
     onClick: (pos: [number, number], target?: Node) => {
-      if (target) {
-        setSelected(target)
-      };
+      setSelected(target || null)
     },
   }
 
-  const
-    colors = AppColors[handleTheme.theme],
-    simulation = handleSettings.graphSettings,
-    items = {
+  const settings = {
+    graph: handleSettings.graphSettings,
+    paper: {
       node: {
         radius: 4,
         opacity: .8,
@@ -90,7 +76,8 @@ function App() {
       label: {
         show: false
       }
-    };
+    }
+  }
 
   return (
     <div className="bg-gray-300 dark:bg-gray-800">
@@ -102,10 +89,18 @@ function App() {
 
       <NetworkGraph
         data={mockData}
-        colors={colors}
-        handlers={handlers}
-        simulation={simulation}
-        items={items}
+        config={{
+          colors,
+          paper: {
+            label: {
+              show: false
+            }
+          }
+        }}
+        handlers={{
+          hover: { handle: handlers.onHover },
+          pan: { use: 'paper', handle: handlers.onPan }
+        }}
       />
     </div>
   );

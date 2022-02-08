@@ -9,13 +9,13 @@ import { SettingsContext } from './settings';
 export const usePaperItems = (data: KeyValueContainer<Node>) => {
 
   const
-  { colors: hexColors, items } = React.useContext(SettingsContext),
+  { config: { paper: settings, colors: hex } } = React.useContext(SettingsContext),
     itemUpdater = React.useRef<ReturnType<typeof makeItemUpdater>>(),
     colors = React.useRef<paper.Color>();
 
   const updateColors = React.useCallback(
-    () => { colors.current = new Paper.Color(hexColors.items) },
-    [hexColors]
+    () => { colors.current = new Paper.Color(hex.items) },
+    [hex]
   );
   React.useEffect(updateColors, [updateColors]);
 
@@ -55,7 +55,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
     _createPoint = (p: d3.SimulationNodeDatum) => new Paper.Point(p),
     _createNode = () => new Paper.Path.Circle({
       center: [0, 0],
-      radius: items.node.radius,
+      radius: settings.node.radius,
       applyMatrix: false
     }),
     _createLabel = (content: string) => new Paper.PointText({
@@ -66,7 +66,7 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
     _createLink = () => new Paper.Path({
       segments: [ [0,0], [0,0] ],
       applyMatrix: false,
-      strokeWidth: items.links.stroke
+      strokeWidth: settings.links.stroke
     }),
     create = {
       point: _createPoint,
@@ -80,22 +80,22 @@ export const usePaperItems = (data: KeyValueContainer<Node>) => {
     _updateNode = (p: d3.SubjectPosition, node: paper.Item) => {
       node.position = create.point(p);
       node.fillColor = colors.current!;
-      _nodeRadius(node, items.node.radius)
-      node.opacity = items.node.opacity;
+      _nodeRadius(node, settings.node.radius)
+      node.opacity = settings.node.opacity;
     },
     _updateLink = (sourceIsHovered: boolean, from: d3.SubjectPosition, to: d3.SubjectPosition, path: paper.Path) => {
       path.firstSegment.point = create.point(from);
       path.lastSegment.point = create.point(to);
       path.strokeColor = colors.current!;
 
-      const { stroke, opacity } = sourceIsHovered ? items.links.highlight : items.links;
+      const { stroke, opacity } = sourceIsHovered ? settings.links.highlight : settings.links;
 
       path.strokeWidth = stroke;
       path.opacity = opacity;
     },
     _highlight = (node: paper.Path, label?: paper.PointText) => {
-      _nodeRadius(node, items.node.highlight.radius);
-      node.opacity = items.node.highlight.opacity;
+      _nodeRadius(node, settings.node.highlight.radius);
+      node.opacity = settings.node.highlight.opacity;
 
       if (label) {
         label.position = node.position.subtract({ x: 0, y: 12 } as paper.Point);

@@ -99,7 +99,7 @@ export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
         d3node = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance),
         target = d3node && data[d3node.id];
 
-      handlers.onClick([ x, y ], target);
+      handlers.click.handle([ x, y ], target);
     }
   }
 
@@ -119,7 +119,7 @@ export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
 
     return {
       handle: handleInteraction,
-      emit: handlers.onHover,
+      emit: handlers.hover.handle,
     }
   }
 }

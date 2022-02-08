@@ -92,42 +92,54 @@ const DragHandler = {
 const ClickHandler = (pos: [number, number], target?: Node) => {}
 
 export const DefaultInteractionHandlers = {
-  onHover: HoverHandler,
-  onDrag: DragHandler,
-  onZoom: ZoomHandler,
-  onPan: PanHandler,
-  onClick: ClickHandler,
+  pan: {
+    use: 'paper',
+    handle: PanHandler
+  },
+  zoom: {
+    use: 'paper',
+    handle: ZoomHandler
+  },
+  drag: {
+    handle: DragHandler
+  },
+  hover: {
+    handle: HoverHandler
+  },
+  click: {
+    handle: ClickHandler
+  }
 }
 
 
 export const DefaultNetworkGraphSettings = {
-  colors: {
-    canvas: 'black',
-    items: 'white',
-  },
-  items: {
-    node: {
-      radius: 3,
-      opacity: .9,
-      highlight: {
-          radius: 5,
-          opacity: 1,
-      }
+  config: {
+    colors: {
+      canvas: 'black',
+      items: 'white',
     },
-    links: {
-      stroke: 1,
-      opacity: .5,
-      highlight: {
-        stroke: 1.5,
+    paper: {
+      node: {
+        radius: 3,
         opacity: .9,
-      }
+        highlight: {
+            radius: 5,
+            opacity: 1,
+        }
+      },
+      links: {
+        stroke: 1,
+        opacity: .5,
+        highlight: {
+          stroke: 1.5,
+          opacity: .9,
+        }
+      },
+      label: {
+        show: true,
+      },
     },
-    label: {
-      show: true,
-    },
+    graph: DefaultGraphSettings as typeof DefaultGraphSettings,
   },
-  simulation: DefaultGraphSettings as typeof DefaultGraphSettings,
   handlers: DefaultInteractionHandlers,
 };
-
-export const NetworkGraphSettings = typeof DefaultNetworkGraphSettings;
