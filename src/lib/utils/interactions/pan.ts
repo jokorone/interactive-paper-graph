@@ -15,7 +15,6 @@ export const usePan = () => {
 
   const offset = React.useRef<paper.Point>({} as paper.Point);
 
-
   const emitUpdateSettings = (delta: paper.Point) => {
     graph.updateSettings(GraphSettingsEnum.forceX, graph.settings.forceX + delta.x);
     graph.updateSettings(GraphSettingsEnum.forceY, graph.settings.forceY + delta.y);
@@ -34,7 +33,12 @@ export const usePan = () => {
         panReference = view.projectToView(offset.current),
         delta = new Paper.Point(e.x, e.y).subtract(panReference);
 
-        settings.use === 'paper' ? view.translate(delta) : emitUpdateSettings(delta);
+        if (settings.use === 'paper') {
+          view.translate(delta);
+        } else {
+          emitUpdateSettings(delta);
+        }
+
 
       settings.handle.panning();
     }

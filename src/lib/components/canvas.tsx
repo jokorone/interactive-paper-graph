@@ -10,6 +10,7 @@ import {
   usePaperItems,
   useInteractiveGraph
 } from './../utils';
+import { useResize } from '../utils/resize';
 
 type CanvasProps = {
   data: KeyValueContainer<Node>;
@@ -18,7 +19,6 @@ export const Canvas = React.memo((
   { data }: CanvasProps
 ) => {
   const { config } = React.useContext(SettingsContext),
-
     ref            = React.useRef<HTMLCanvasElement | null>(null),
     project        = React.useRef<paper.Project | null>(),
     items          = React.useRef<PaperModel | null>(),
@@ -27,12 +27,21 @@ export const Canvas = React.memo((
 
     simulation     = useSimulation(data),
     paper          = usePaperItems(data),
-    initHandlers   = useInteractiveGraph(data);
+    initHandlers   = useInteractiveGraph(data),
+    resize         = useResize();
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
     context.current = ref.current!.getContext('2d');
-    fixAspectRatio();
+
+    const resizeCanvas = () => {
+      resize.resizeHandler(ref.current!, context.current!);
+    }
+
+    resizeCanvas();
+    resize.add(resizeCanvas);
+
+    return resize.removeListener(resizeCanvas);
   }, []);
 
   const setupCanvas = React.useCallback(
@@ -128,30 +137,6 @@ export const Canvas = React.memo((
 
     (frameEvent.count % 16 === 0)
       && interaction.current!.emit(highlights.pop());
-  }
-
-  React.useEffect(() => {
-    const resizeHandler = () => {
-      fixAspectRatio();
-    };
-
-    window.addEventListener("resize", resizeHandler);
-
-    return () => window.removeEventListener("resize", resizeHandler);
-  }, []);
-
-  function fixAspectRatio() {
-    const  { devicePixelRatio, innerWidth, innerHeight } = window;
-
-    if (window.devicePixelRatio) {
-      select(ref.current)
-        .attr('width', innerWidth * devicePixelRatio)
-        .attr('height', innerHeight * devicePixelRatio)
-        .style('width', `${innerWidth}px`)
-        .style('height', `${innerHeight}px`);
-
-      context.current!.scale(devicePixelRatio, devicePixelRatio);
-    }
   }
 
   return (<canvas ref={ref}></canvas>);

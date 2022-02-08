@@ -28,11 +28,11 @@ function App() {
       dragging: (node: Node) => {console.log('dragging')},
       dragstop: () => {console.log('dragstop')},
     },
-    // onPan: {
-    //   panstart: () => {console.log('panstart')},
-    //   panning: () => {console.log('panning')},
-    //   panstop: () => {console.log('panstop')},
-    // },
+    onPan: {
+      panstart: () => {console.log('panstart')},
+      panning: () => {console.log('panning')},
+      panstop: () => {console.log('panstop')},
+    },
     onZoom: {
       zoomstart: () => {console.log('zoomstart')},
       zooming: () => {console.log('zooming')},
@@ -89,6 +89,9 @@ function App() {
       <NetworkGraph
         data={mockData}
         config={{
+          // canvas: {
+          //   width:
+          // },
           colors,
           graph: {
             updateSettings: handleSettings.updateGraphSetting,
@@ -98,7 +101,8 @@ function App() {
         }}
         handlers={{
           hover: { handle: handlers.onHover },
-          pan: { use: 'paper' }
+          pan: { use: 'paper', handle: handlers.onPan },
+          click: { handle: handlers.onClick }
         }}
       />
     </div>

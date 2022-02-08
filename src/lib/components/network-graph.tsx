@@ -1,11 +1,10 @@
 import React from 'react';
 import { Canvas } from "./canvas";
 
-
 import { deepmerge } from 'deepmerge-ts'
 import { SettingsContext, useGraphData } from '../utils';
 
-import { RawNode, RawLink, GraphSettingsEnum, InteractionHandlers } from './../models';
+import { RawNode, RawLink, InteractionHandlers } from './../models';
 import { DefaultNetworkGraphSettings } from '../defaults';
 
 type DefaultGraphProps =  {
@@ -15,6 +14,10 @@ type DefaultGraphProps =  {
   },
   config?: {
     colors?: typeof DefaultNetworkGraphSettings.config.colors,
+    canvas?: {
+      height: number | string,
+      width: number | string,
+    },
     paper?: {
       node?: {
         radius?: number;

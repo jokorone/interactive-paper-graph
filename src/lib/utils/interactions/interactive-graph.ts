@@ -70,7 +70,10 @@ export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
     }
 
     const stop = (event: DragEvent) => {
-      [onPan.panstop, onDrag.dragstop].map(cb => cb(event));
+      (event.subject instanceof HTMLCanvasElement
+        ? onPan.panstop
+        : onDrag.dragstop
+      )(event);
       cancelEvent(event.sourceEvent);
     }
 
