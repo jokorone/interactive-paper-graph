@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/interactive-paper-graph/static/css/main.b87f0976.css",
-    "main.js": "/interactive-paper-graph/static/js/main.7f480a12.js",
+    "main.js": "/interactive-paper-graph/static/js/main.fca2042f.js",
     "static/media/darkmode-toggle.svg": "/interactive-paper-graph/static/media/darkmode-toggle.cccaaf3a6742521f327895fd001a0af0.svg",
     "index.html": "/interactive-paper-graph/index.html",
     "static/media/settings.svg": "/interactive-paper-graph/static/media/settings.7fc0da1354dda508e86f38f33c757361.svg",
     "main.b87f0976.css.map": "/interactive-paper-graph/static/css/main.b87f0976.css.map",
-    "main.7f480a12.js.map": "/interactive-paper-graph/static/js/main.7f480a12.js.map"
+    "main.fca2042f.js.map": "/interactive-paper-graph/static/js/main.fca2042f.js.map"
   },
   "entrypoints": [
     "static/css/main.b87f0976.css",
-    "static/js/main.7f480a12.js"
+    "static/js/main.fca2042f.js"
   ]
 }
