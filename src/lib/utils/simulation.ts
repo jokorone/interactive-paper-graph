@@ -1,8 +1,6 @@
 import React from 'react';
 
 import {
-  SimulationLinkDatum,
-  SimulationNodeDatum,
   forceSimulation,
   forceManyBody,
   forceLink,
@@ -15,7 +13,7 @@ import { Node, Link, KeyValueContainer } from '../models';
 import { SettingsContext } from './settings';
 
 export const useSimulation = (data: KeyValueContainer<Node>) => {
-  const { simulation: graphSettings } = React.useContext(SettingsContext);
+  const { config: { bounds, graph: { settings } } } = React.useContext(SettingsContext);
 
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
@@ -37,43 +35,39 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
     () => {
       simulation
         .force('link', forces.forceLink
-          .distance(graphSettings.linkDistance)
+          .distance(settings.linkDistance)
           .iterations(1)
-          .id((l: any) => l.id))
+          .id(({ id }: any) => id ))
         .force('charge', forces.forceCharge
-          .strength(graphSettings.chargeForceStrength)
-          .distanceMin(graphSettings.chargeDistanceMin)
-          .distanceMax(graphSettings.chargeDistanceMax))
+          .strength(settings.chargeForceStrength)
+          .distanceMin(settings.chargeDistanceMin)
+          .distanceMax(settings.chargeDistanceMax))
         .force('collide', forces.forceCollide
-          .strength(graphSettings.collideStrength)
-          .radius(graphSettings.collideRadius)
+          .strength(settings.collideStrength)
+          .radius(settings.collideRadius)
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x(window.innerWidth / 2))
+          .x(bounds.width / 2))
         .force('forceY', forces.forceY
-          .y(window.innerHeight / 2));
+          .y(bounds.height / 2));
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();
 
       return () => simulation.restart() && void 0;
     },
-    [simulation, forces, graphSettings]
+    [simulation, forces, settings]
   );
   React.useEffect(attachForces, [attachForces]);
 
   const attachData = React.useCallback(
     () => {
-      const createNode = ({ id, group }: Node) => ({ id, group });
-
       const _data = Object.values(data),
-            nodes = _data.map(createNode) as Node[],
-            links = _data.flatMap(node => Object.values(node.links) as unknown as SimulationLinkDatum<SimulationNodeDatum>);
+            nodes = _data.map(node => node.payload as Node),
+            links = _data.flatMap(node => Object.values(node.links));
 
       if (simulation.nodes().length) {
-        console.log('clear sim');
-
         simulation.nodes([]);
         forces.forceLink.links([]);
       }

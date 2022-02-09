@@ -1,41 +1,42 @@
 import React from 'react';
 
 import mockData from './data/mock.json';
-import testData from './data/test.json';
+import { NetworkGraph, Node } from './lib';
+import { SettingsContainer } from './components';
 
-import { NetworkGraph, Node, NetworkGraphSettingsConfig } from './lib';
-
-import { Info, SettingsContainer } from './components';
-
-import { Theme, useTheme } from './util/theme';
-import { useGraphSettings } from './util/graph-settings';
+import { useTheme } from './util/theme';
+import { useSimulationSettings } from './util/graph-settings';
 import { InteractionOutlet } from './components/overlays/interaction-outlet';
-
-
-const AppColors = {
-  ['dark' as Theme]: {
-    canvas: '#2c2b2c',
-    items: '#d6d3d1'
-  },
-  ['light' as Theme]: {
-    canvas: '#d6d3d1',
-    items: '#2c2b2c'
-  }
-}
+import { MarkdownContent } from './components/content/markdown-content';
+import { useColors } from './util/colors';
 
 function App() {
   const
     handleTheme = useTheme(),
-    handleGraphSettings = useGraphSettings(),
-    handleSettings = { ...handleTheme, ...handleGraphSettings };
+    colors = useColors(handleTheme.theme),
+    handleSimulationSettings = useSimulationSettings(),
+    handleSettings = { ...handleTheme, ...handleSimulationSettings };
 
-  const [ highlight, setHighlight ] = React.useState<Node | null>(null);
+  const
+    [ highlight, setHighlight ] = React.useState<Node | null>(null),
+    [ selected, setSelected ] = React.useState<Node | null>(null);
 
   const handlers = {
+
     onDrag: {
-      start: (node: Node) => {},
-      observe: (node: Node) => {},
-      stop: () => {},
+      dragstart: (node: Node) => {console.log('dragstart')},
+      dragging: (node: Node) => {console.log('dragging')},
+      dragstop: () => {console.log('dragstop')},
+    },
+    onPan: {
+      panstart: () => {console.log('panstart')},
+      panning: () => {console.log('panning')},
+      panstop: () => {console.log('panstop')},
+    },
+    onZoom: {
+      zoomstart: () => {console.log('zoomstart')},
+      zooming: () => {console.log('zooming')},
+      zoomstop: () => {console.log('zoomstop')},
     },
     onHover: (target: Node | undefined) => {
       Promise.resolve().then(() => {
@@ -48,15 +49,13 @@ function App() {
       });
     },
     onClick: (pos: [number, number], target?: Node) => {
-      console.log(pos, target?.id);
-    }
+      setSelected(target || null)
+    },
   }
 
   const settings = {
-    colors: AppColors[handleTheme.theme],
-    handlers,
-    simulation: handleGraphSettings.graphSettings,
-    items: {
+    graph: handleSettings.simulationSettings,
+    paper: {
       node: {
         radius: 4,
         opacity: .8,
@@ -77,15 +76,34 @@ function App() {
         show: false
       }
     }
-  } as NetworkGraphSettingsConfig;
-
+  }
 
   return (
-    <div className=" p-0 m-0 bg-gray-300 dark:bg-gray-800">
+    <div className="bg-gray-300 dark:bg-gray-800">
+      {
+        selected && <MarkdownContent selected={selected}/>
+      }
       <InteractionOutlet highlight={highlight}/>
       <SettingsContainer {...handleSettings}/>
-      <Info data={mockData}/>
-      <NetworkGraph data={mockData} config={settings} />
+
+      <NetworkGraph
+        data={mockData}
+        config={{
+          bounds: {
+            resize: true
+          },
+          colors,
+          graph: {
+            settings: settings.graph
+          },
+          paper: settings.paper
+        }}
+        handlers={{
+          hover: { handle: handlers.onHover },
+          pan:   { use: 'paper', handle: handlers.onPan },
+          click: { handle: handlers.onClick }
+        }}
+      />
     </div>
   );
 }

@@ -1,9 +1,26 @@
 import React from 'react';
 
-import { DefaultNetworkGraphSettings } from '..';
+import { DefaultSettings, DefaultSimulationSettings } from './../defaults';
+import { SimulationSettings } from './../models';
 
-// use defaults as NetworkGraphSettings is with all props marked optional
-type FixedNetworkGraphSettings = typeof DefaultNetworkGraphSettings;
-export const SettingsContext = React.createContext<FixedNetworkGraphSettings>(
-    {} as FixedNetworkGraphSettings
+
+export const SettingsContext = React.createContext<typeof DefaultSettings>(
+    {} as typeof DefaultSettings
   );
+
+export const useGraphSettings = () => {
+  const [
+    simulationSettings,
+    _setSimulationSettings
+  ] = React.useState<SimulationSettings>(DefaultSimulationSettings);
+
+  const updateGraphSetting = (
+    key: keyof SimulationSettings,
+    value: number
+  ) => _setSimulationSettings(settings => ({
+    ...settings,
+    [key]: value
+  }));
+
+  return { simulationSettings, updateGraphSetting };
+}

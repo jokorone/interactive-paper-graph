@@ -18,7 +18,7 @@ export const useGraphData = (source: { nodes: RawNode[], links: RawLink[] }) => 
   return data;
 }
 
-export const fromRawData = (data: {
+const fromRawData = (data: {
   nodes: RawNode[],
   links: RawLink[]
 }) => {

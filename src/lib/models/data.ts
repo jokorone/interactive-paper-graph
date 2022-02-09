@@ -4,7 +4,7 @@ type d3Node = & d3.SimulationNodeDatum & d3.SubjectPosition
 export type Node = BaseNode<RawNode> & d3Node;
 export type Link = BaseLink<Node>;
 
-type BaseNode<T> = RawNode & {
+type BaseNode<T> = T & {
     payload: T,
     links: KeyValueContainer<BaseLink<string>>,
   };

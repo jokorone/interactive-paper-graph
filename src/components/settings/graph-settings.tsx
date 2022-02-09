@@ -1,15 +1,15 @@
 import React from 'react';
 
-import { GraphSettingInputConfig, GraphSettingsEnum as GraphSetting, GraphSettingsInputs, humanReadable } from "../../lib";
+import { GraphSettingInputConfig, SimulationSettingsEnum as GraphSetting, SimulationSettingsInputs, humanReadable } from "../../lib";
 
 import { ReactComponent as SettingsSVG } from './../../icons/settings.svg';
-import { useGraphSettings } from '../../util/graph-settings';
+import { useSimulationSettings } from '../../util/graph-settings';
 
-export const GraphSettings = (props: ReturnType<typeof useGraphSettings>) => {
+export const SimulationSettings = (props: ReturnType<typeof useSimulationSettings>) => {
 
   const [ visible, setVisible ] = React.useState(false);
 
-  const handleGraphSettingsInput = (key: GraphSetting) => {
+  const handleSimulationSettingsInput = (key: GraphSetting) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.updateGraphSetting(key, +event.target.value);
     }
@@ -17,16 +17,16 @@ export const GraphSettings = (props: ReturnType<typeof useGraphSettings>) => {
 
   const Settings = (
     <div className='flex flex-row'>
-      { (Object.entries(GraphSettingsInputs) as [
+      { (Object.entries(SimulationSettingsInputs) as [
           [GraphSetting, GraphSettingInputConfig]
         ]).map(
         ([ key, config ]) =>
           <React.Fragment key={key}>
             <SliderInput
               name={key}
-              value={props.graphSettings[key]}
+              value={props.simulationSettings[key]}
               config={config}
-              handler={handleGraphSettingsInput(key)}
+              handler={handleSimulationSettingsInput(key)}
             />
           </React.Fragment>
         )
@@ -35,7 +35,7 @@ export const GraphSettings = (props: ReturnType<typeof useGraphSettings>) => {
   );
 
   const IconToggle = (
-    <button className="icon group focus:outline-none outline-none active:outline-none"
+    <button className="icon group"
       onClick={() => setVisible(!visible)}>
       {
         visible ? 'x' : <>
@@ -64,18 +64,20 @@ const SliderInput = ({ name, value, config, handler }:{
   handler: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }) => {
 
-  return <div className="flex flex-col mx-2 my-auto text-xs w-40 justify-items-between">
-    <div className='flex flex-row justify-between'>
-      <span className='text-gray-900 dark:text-gray-200'>{humanReadable(name)}</span>
-      <span className='text-gray-900 dark:text-gray-200 ml-auto'>{value}</span>
-    </div>
-    <input type="range" className='appearance-none h-1 w-max outline-none opacity-70 transition-opacity hover:opacity-100'
-      id={name}
-      min={config.min}
-      max={config.max}
-      step={config.step}
-      value={value}
-      onChange={handler}
-    />
+  return (
+    <div className="flex flex-col mx-2 my-auto text-xs w-40 justify-items-between">
+      <div className='flex flex-row justify-between'>
+        <span className='text-gray-900 dark:text-gray-200'>{humanReadable(name)}</span>
+        <span className='text-gray-900 dark:text-gray-200 ml-auto'>{value}</span>
+      </div>
+      <input type="range" className='appearance-none h-1 w-max outline-none opacity-70 transition-opacity hover:opacity-100'
+        id={name}
+        min={config.min}
+        max={config.max}
+        step={config.step}
+        value={value}
+        onChange={handler}
+      />
   </div>
+  );
 };

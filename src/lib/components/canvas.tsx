@@ -2,14 +2,14 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { PaperModel } from '../../lib/models/paper';
-import { Node, KeyValueContainer } from '../../lib/models';
+import { Node, KeyValueContainer, PaperModel } from './../models';
 
 import {
   SettingsContext,
   useSimulation,
   usePaperItems,
-  useInteractions
+  useResize,
+  useInteractiveGraph
 } from './../utils';
 
 type CanvasProps = {
@@ -18,34 +18,41 @@ type CanvasProps = {
 export const Canvas = React.memo((
   { data }: CanvasProps
 ) => {
-  const
-    { colors, items: config } = React.useContext(SettingsContext),
+  const { config } = React.useContext(SettingsContext),
+    ref            = React.useRef<HTMLCanvasElement | null>(null),
+    project        = React.useRef<paper.Project | null>(),
+    items          = React.useRef<PaperModel | null>(),
+    context        = React.useRef<CanvasRenderingContext2D | null>(),
+    interaction    = React.useRef<ReturnType<typeof initHandlers>>(),
 
-    ref          = React.useRef<HTMLCanvasElement | null>(null),
-    project      = React.useRef<paper.Project | null>(null),
-    items        = React.useRef<PaperModel | null>(null),
-    context      = React.useRef<CanvasRenderingContext2D | null>(),
-    interaction  = React.useRef<ReturnType<typeof registerInteractionHandlers>>(),
+    simulation     = useSimulation(data),
+    paper          = usePaperItems(data),
+    initHandlers   = useInteractiveGraph(data),
+    resizeHandler  = useResize();
 
-    simulation = useSimulation(data),
-    { createPaperItems, getItemUpdater, create } = usePaperItems(data),
-    registerInteractionHandlers = useInteractions();
+  const resizeCanvas = () => {
+    resizeHandler(ref.current!, context.current!);
+  }
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
     context.current = ref.current!.getContext('2d');
-    fixAspectRatio();
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    return () => window.removeEventListener('resize', resizeCanvas);
   }, []);
 
   const setupCanvas = React.useCallback(
     () => {
-      items.current = createPaperItems();
+      items.current = paper.createPaperItems();
       project.current!.view.onFrame = draw;
 
-      interaction.current = registerInteractionHandlers(
+      interaction.current = initHandlers(
         project.current!,
         ref.current!,
-        simulation,
+        simulation
       );
 
       return () => project.current!.clear();
@@ -57,10 +64,10 @@ export const Canvas = React.memo((
   const updateCanvasTheme = React.useCallback(
     () => {
       select(ref.current).transition()
-        .duration(200).delay(100)
-        .style('background', colors.canvas)
+        .duration(100)
+        .style('background', config.colors.canvas);
     },
-    [colors]
+    [config.colors]
   );
 
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
@@ -76,7 +83,7 @@ export const Canvas = React.memo((
       || !items.current
       || !interaction.current) return;
 
-    const update = getItemUpdater()!;
+    const update = paper.getItemUpdater()!;
 
     let index = 0,
         highlights: Node[] = [];
@@ -96,15 +103,15 @@ export const Canvas = React.memo((
         highlight: isHovered || isDragged,
       }
 
-      node.position = create.point(d3node);
+      node.position = paper.create.point(d3node);
 
       if (currentItem.is.highlight) {
         highlights.push(currentItem.payload);
 
-        if (config.label.show && !label) {
+        if (config.paper.label.show && !label) {
           label
             = items.current![index].label
-            = create.label(d3node.id);
+            = paper.create.label(d3node.id);
         }
 
         update.highlight(node, label || undefined);
@@ -130,31 +137,6 @@ export const Canvas = React.memo((
 
     (frameEvent.count % 16 === 0)
       && interaction.current!.emit(highlights.pop());
-  }
-
-  React.useEffect(() => {
-    const resizeHandler = () => {
-      interaction.current!.onResize(project.current!.view)
-      fixAspectRatio();
-    };
-
-    window.addEventListener("resize", resizeHandler);
-
-    return () => window.removeEventListener("resize", resizeHandler);
-  }, []);
-
-  function fixAspectRatio() {
-    const  { devicePixelRatio, innerWidth, innerHeight } = window;
-
-    if (window.devicePixelRatio) {
-      select(ref.current)
-        .attr('width', innerWidth * devicePixelRatio)
-        .attr('height', innerHeight * devicePixelRatio)
-        .style('width', `${innerWidth}px`)
-        .style('height', `${innerHeight}px`);
-
-      context.current!.scale(devicePixelRatio, devicePixelRatio);
-    }
   }
 
   return (<canvas ref={ref}></canvas>);
