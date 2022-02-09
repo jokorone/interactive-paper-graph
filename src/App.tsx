@@ -89,9 +89,9 @@ function App() {
       <NetworkGraph
         data={mockData}
         config={{
-          // canvas: {
-          //   width:
-          // },
+          bounds: {
+            resize: true
+          },
           colors,
           graph: {
             updateSettings: handleSettings.updateGraphSetting,

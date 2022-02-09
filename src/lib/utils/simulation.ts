@@ -13,7 +13,7 @@ import { Node, Link, KeyValueContainer } from '../models';
 import { SettingsContext } from './settings';
 
 export const useSimulation = (data: KeyValueContainer<Node>) => {
-  const { config: { graph: { settings } } } = React.useContext(SettingsContext);
+  const { config: { bounds, graph: { settings } } } = React.useContext(SettingsContext);
 
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
@@ -48,9 +48,9 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x(settings.forceX))
+          .x(bounds.width / 2))
         .force('forceY', forces.forceY
-          .y(settings.forceY));
+          .y(bounds.height / 2));
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();

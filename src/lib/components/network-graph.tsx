@@ -14,9 +14,13 @@ type DefaultGraphProps =  {
   },
   config?: {
     colors?: typeof DefaultNetworkGraphSettings.config.colors,
-    canvas?: {
-      height: number | string,
-      width: number | string,
+    bounds?: {
+      width?: number;
+      height?: number;
+      resize?: {
+          width: boolean;
+          height: boolean;
+      } | boolean,
     },
     paper?: {
       node?: {

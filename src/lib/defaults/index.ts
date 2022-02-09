@@ -117,9 +117,10 @@ export const DefaultNetworkGraphSettings = {
       canvas: 'black',
       items: 'white',
     },
-    canvas: {
-      width: '100%',
-      height: 'auto',
+    bounds: {
+      width: 800,
+      height: 600,
+      resize: {  width: false, height: false }
     },
     paper: {
       node: {

@@ -28,20 +28,20 @@ export const Canvas = React.memo((
     simulation     = useSimulation(data),
     paper          = usePaperItems(data),
     initHandlers   = useInteractiveGraph(data),
-    resize         = useResize();
+    resizeHandler  = useResize();
+
+  const resizeCanvas = () => {
+    resizeHandler(ref.current!, context.current!);
+  }
 
   React.useEffect(() => {
     project.current = new Paper.Project(ref.current!);
     context.current = ref.current!.getContext('2d');
 
-    const resizeCanvas = () => {
-      resize.resizeHandler(ref.current!, context.current!);
-    }
-
+    window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    resize.add(resizeCanvas);
 
-    return resize.removeListener(resizeCanvas);
+    return () => window.removeEventListener('resize', resizeCanvas);
   }, []);
 
   const setupCanvas = React.useCallback(

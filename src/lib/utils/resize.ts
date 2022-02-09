@@ -1,19 +1,30 @@
 import React from 'react';
 import { select } from 'd3';
+import { SettingsContext } from './settings';
 
 export const useResize = () => {
+  const { config: { bounds } } = React.useContext(SettingsContext);
 
-  const fixAspectRatio = (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => {
-    const  { devicePixelRatio, innerWidth, innerHeight } = window;
+  const fixAspectRatio = (ref: HTMLCanvasElement, context: CanvasRenderingContext2D) => {
+    let { width, height } = bounds;
+
+    if (typeof bounds.resize === 'boolean') {
+      width = window.innerWidth;
+      height = window.innerHeight;
+    } else {
+      bounds.resize.width && (width = window.innerWidth);
+      bounds.resize.height && (height = window.innerHeight);
+    }
 
     if (window.devicePixelRatio) {
-      select(canvas)
-        .attr('width', innerWidth * devicePixelRatio)
-        .attr('height', innerHeight * devicePixelRatio)
-        .style('width', `${innerWidth}px`)
-        .style('height', `${innerHeight}px`);
 
-      context.scale(devicePixelRatio, devicePixelRatio);
+      select(ref)
+        .attr('width', width * window.devicePixelRatio)
+        .attr('height', height * window.devicePixelRatio)
+        .style('width', `${width}px`)
+        .style('height', `${height}px`);
+
+      context.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
   }
 
@@ -21,9 +32,5 @@ export const useResize = () => {
     fixAspectRatio(canvas, context);
   }
 
-  return {
-    resizeHandler,
-    add:       (listener: () => void) => window.addEventListener('resize', listener),
-    removeListener: (listener: () => void) => window.removeEventListener('resize', listener),
-  }
+  return resizeHandler;
 }
