@@ -1,6 +1,6 @@
-import { DefaultGraphSettings } from "../defaults";
+import { DefaultSimulationSettings } from "../defaults";
 
-export enum GraphSettingsEnum {
+export enum SimulationSettingsEnum {
   chargeForceStrength = 'chargeForceStrength',
   chargeDistanceMin = 'chargeDistanceMin',
   chargeDistanceMax = 'chargeDistanceMax',
@@ -11,7 +11,7 @@ export enum GraphSettingsEnum {
   forceY = 'forceY',
 };
 
-export type GraphSettings = typeof DefaultGraphSettings;
+export type SimulationSettings = typeof DefaultSimulationSettings;
 
 export type GraphSettingInputConfig = {
   step: number;

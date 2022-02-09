@@ -1,21 +1,31 @@
 import React from "react"
 
-import { DefaultGraphSettings } from "../lib"
+import type { SimulationSettings } from "../lib"
 
+const initialSimulationSettings = {
+  chargeForceStrength: -120,
+  chargeDistanceMin: 1,
+  chargeDistanceMax: 420,
+  collideRadius: 5,
+  collideStrength: 0,
+  linkDistance: 35,
+  forceX: Math.floor(window.innerWidth * .65),
+  forceY: Math.floor(window.innerHeight * .5),
+}
 
-export const useGraphSettings = () => {
+export const useSimulationSettings = () => {
   const [
-    graphSettings,
-    _setGraphSettings
-  ] = React.useState<typeof DefaultGraphSettings>(DefaultGraphSettings);
+    SimulationSettings,
+    _setSimulationSettings
+  ] = React.useState<SimulationSettings>(initialSimulationSettings);
 
   const updateGraphSetting = (
-    key: keyof typeof DefaultGraphSettings,
+    key: keyof SimulationSettings,
     value: number
-  ) => _setGraphSettings(settings => ({
+  ) => _setSimulationSettings(settings => ({
     ...settings,
     [key]: value
   }));
 
-  return { graphSettings, updateGraphSetting };
+  return { SimulationSettings, updateGraphSetting };
 }

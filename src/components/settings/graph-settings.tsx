@@ -1,15 +1,15 @@
 import React from 'react';
 
-import { GraphSettingInputConfig, GraphSettingsEnum as GraphSetting, GraphSettingsInputs, humanReadable } from "../../lib";
+import { GraphSettingInputConfig, SimulationSettingsEnum as GraphSetting, SimulationSettingsInputs, humanReadable } from "../../lib";
 
 import { ReactComponent as SettingsSVG } from './../../icons/settings.svg';
-import { useGraphSettings } from '../../util/graph-settings';
+import { useSimulationSettings } from '../../util/graph-settings';
 
-export const GraphSettings = (props: ReturnType<typeof useGraphSettings>) => {
+export const SimulationSettings = (props: ReturnType<typeof useSimulationSettings>) => {
 
   const [ visible, setVisible ] = React.useState(false);
 
-  const handleGraphSettingsInput = (key: GraphSetting) => {
+  const handleSimulationSettingsInput = (key: GraphSetting) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.updateGraphSetting(key, +event.target.value);
     }
@@ -17,16 +17,16 @@ export const GraphSettings = (props: ReturnType<typeof useGraphSettings>) => {
 
   const Settings = (
     <div className='flex flex-row'>
-      { (Object.entries(GraphSettingsInputs) as [
+      { (Object.entries(SimulationSettingsInputs) as [
           [GraphSetting, GraphSettingInputConfig]
         ]).map(
         ([ key, config ]) =>
           <React.Fragment key={key}>
             <SliderInput
               name={key}
-              value={props.graphSettings[key]}
+              value={props.SimulationSettings[key]}
               config={config}
-              handler={handleGraphSettingsInput(key)}
+              handler={handleSimulationSettingsInput(key)}
             />
           </React.Fragment>
         )

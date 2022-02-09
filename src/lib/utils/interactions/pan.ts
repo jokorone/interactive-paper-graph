@@ -2,23 +2,17 @@ import React from "react";
 import Paper from "paper";
 
 import { D3DragEvent } from "d3-drag";
-import { GraphSettingsEnum, Node } from "./../../models";
+import { Node } from "./../../models";
 import { SettingsContext } from "../settings";
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
 export const usePan = () => {
   const {
-    handlers: { pan: settings },
-    config: { graph }
+    handlers: { pan: settings }
   } = React.useContext(SettingsContext);
 
   const offset = React.useRef<paper.Point>({} as paper.Point);
-
-  const emitUpdateSettings = (delta: paper.Point) => {
-    graph.updateSettings(GraphSettingsEnum.forceX, graph.settings.forceX + delta.x);
-    graph.updateSettings(GraphSettingsEnum.forceY, graph.settings.forceY + delta.y);
-  }
 
   const createPanHandler = (view: paper.View) => {
     const panstart = (e: DragEvent) => {
@@ -33,13 +27,7 @@ export const usePan = () => {
         panReference = view.projectToView(offset.current),
         delta = new Paper.Point(e.x, e.y).subtract(panReference);
 
-        if (settings.use === 'paper') {
-          view.translate(delta);
-        } else {
-          emitUpdateSettings(delta);
-        }
-
-
+      view.translate(delta);
       settings.handle.panning();
     }
 

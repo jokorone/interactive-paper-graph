@@ -1,20 +1,20 @@
-import { Node, GraphSettingsEnum } from "../models";
+import { Node, SimulationSettingsEnum } from "../models";
 
-export const humanReadable = (key: GraphSettingsEnum) => HumanGraphSettings[key];
+export const humanReadable = (key: SimulationSettingsEnum) => HumanSimulationSettings[key];
 
-const HumanGraphSettings = {
-  [GraphSettingsEnum.chargeForceStrength]: 'cozyness',
-  [GraphSettingsEnum.chargeDistanceMin]: 'charge distance min',
-  [GraphSettingsEnum.chargeDistanceMax]: 'charge distance max',
-  [GraphSettingsEnum.collideStrength]: 'collide strength',
-  [GraphSettingsEnum.collideRadius]: 'collide radius',
-  [GraphSettingsEnum.linkDistance]: 'link distance',
-  [GraphSettingsEnum.forceX]: 'position (x)',
-  [GraphSettingsEnum.forceY]: 'position (y)',
+const HumanSimulationSettings = {
+  [SimulationSettingsEnum.chargeForceStrength]: 'cozyness',
+  [SimulationSettingsEnum.chargeDistanceMin]: 'charge distance min',
+  [SimulationSettingsEnum.chargeDistanceMax]: 'charge distance max',
+  [SimulationSettingsEnum.collideStrength]: 'collide strength',
+  [SimulationSettingsEnum.collideRadius]: 'collide radius',
+  [SimulationSettingsEnum.linkDistance]: 'link distance',
+  [SimulationSettingsEnum.forceX]: 'position (x)',
+  [SimulationSettingsEnum.forceY]: 'position (y)',
 };
 
-export const DefaultGraphSettings: {
-  [key in GraphSettingsEnum]: number
+export const DefaultSimulationSettings: {
+  [key in SimulationSettingsEnum]: number
 } = {
   chargeForceStrength: -120,
   chargeDistanceMin: 1,
@@ -26,43 +26,43 @@ export const DefaultGraphSettings: {
   forceY: Math.floor(window.innerHeight * .5),
 }
 
-export const GraphSettingsInputs = {
-  [GraphSettingsEnum.chargeForceStrength]: {
+export const SimulationSettingsInputs = {
+  [SimulationSettingsEnum.chargeForceStrength]: {
     step: 1,
     min: -200,
     max: 50,
   },
-  [GraphSettingsEnum.chargeDistanceMax]: {
+  [SimulationSettingsEnum.chargeDistanceMax]: {
     step: 1,
     min: 0,
     max: 1312,
   },
-  [GraphSettingsEnum.linkDistance]: {
+  [SimulationSettingsEnum.linkDistance]: {
     step: 1,
     min: 0,
     max: 100,
   },
-  [GraphSettingsEnum.chargeDistanceMin]: {
+  [SimulationSettingsEnum.chargeDistanceMin]: {
     step: .1,
     min: 0,
     max: 500,
   },
-  // [GraphSettingsEnum.collideRadius]: {
+  // [SimulationSettingsEnum.collideRadius]: {
   //   step: 1,
   //   min: 0,
   //   max: 100,
   // },
-  // [GraphSettingsEnum.collideStrength]: {
+  // [SimulationSettingsEnum.collideStrength]: {
   //   step: .1,
   //   min: 0,
   //   max: 2,
   // },
-  [GraphSettingsEnum.forceX]: {
+  [SimulationSettingsEnum.forceX]: {
     step: 1,
     min: 0,
     max: window.innerWidth * 1.75,
   },
-  [GraphSettingsEnum.forceY]: {
+  [SimulationSettingsEnum.forceY]: {
     step: 1,
     min: 0,
     max: window.innerHeight * 1.75,
@@ -111,7 +111,7 @@ export const DefaultInteractionHandlers = {
   }
 }
 
-export const DefaultNetworkGraphSettings = {
+export const DefaultNetworkSimulationSettings = {
   config: {
     colors: {
       canvas: 'black',
@@ -144,8 +144,7 @@ export const DefaultNetworkGraphSettings = {
       },
     },
     graph: {
-      updateSettings: (key: GraphSettingsEnum, value: number) => {},
-      settings: DefaultGraphSettings as typeof DefaultGraphSettings
+      settings: DefaultSimulationSettings as typeof DefaultSimulationSettings
     },
   },
   handlers: DefaultInteractionHandlers,

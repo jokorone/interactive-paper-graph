@@ -5,7 +5,7 @@ import { NetworkGraph, Node } from './lib';
 import { SettingsContainer } from './components';
 
 import { useTheme } from './util/theme';
-import { useGraphSettings } from './util/graph-settings';
+import { useSimulationSettings } from './util/graph-settings';
 import { InteractionOutlet } from './components/overlays/interaction-outlet';
 import { MarkdownContent } from './components/content/markdown-content';
 import { useColors } from './util/colors';
@@ -14,8 +14,8 @@ function App() {
   const
     handleTheme = useTheme(),
     colors = useColors(handleTheme.theme),
-    handleGraphSettings = useGraphSettings(),
-    handleSettings = { ...handleTheme, ...handleGraphSettings };
+    handleSimulationSettings = useSimulationSettings(),
+    handleSettings = { ...handleTheme, ...handleSimulationSettings };
 
   const
     [ highlight, setHighlight ] = React.useState<Node | null>(null),
@@ -54,7 +54,7 @@ function App() {
   }
 
   const settings = {
-    graph: handleSettings.graphSettings,
+    graph: handleSettings.SimulationSettings,
     paper: {
       node: {
         radius: 4,
@@ -94,7 +94,6 @@ function App() {
           },
           colors,
           graph: {
-            updateSettings: handleSettings.updateGraphSetting,
             settings: settings.graph
           },
           paper: settings.paper

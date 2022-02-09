@@ -1,10 +1,10 @@
-import { useGraphSettings } from '../../util/graph-settings';
+import { useSimulationSettings } from '../../util/graph-settings';
 import { useTheme } from '../../util/theme';
 import { DarkmodeToggle } from './darkmode-toggle';
-import { GraphSettings } from './graph-settings';
+import { SimulationSettings } from './graph-settings';
 
 export const SettingsContainer = (
-    props: ReturnType<typeof useGraphSettings> & ReturnType<typeof useTheme>
+    props: ReturnType<typeof useSimulationSettings> & ReturnType<typeof useTheme>
   ) => {
 
   return(<>
@@ -14,7 +14,7 @@ export const SettingsContainer = (
     </div>
 
     <div className='absolute bottom-2 right-0'>
-      <GraphSettings {...props}/>
+      <SimulationSettings {...props}/>
     </div>
 
   </>);

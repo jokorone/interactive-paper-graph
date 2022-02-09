@@ -1,12 +1,12 @@
 import { InteractionHandlers } from './interactions';
-import { GraphSettings } from './settings';
+import { SimulationSettings } from './settings';
 
 export * from './data';
 export * from './interactions';
 export * from './paper';
 export * from './settings';
 
-export type NetworkGraphSettingsConfig = {
+export type NetworkSimulationSettingsConfig = {
   colors?: {
       canvas?: string;
       items?: string;
@@ -33,6 +33,6 @@ export type NetworkGraphSettingsConfig = {
         showOnHover?: boolean,
       };
   };
-  simulation?: GraphSettings
+  simulation?: SimulationSettings
   handlers?: InteractionHandlers
 }
