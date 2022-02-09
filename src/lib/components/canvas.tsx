@@ -8,9 +8,9 @@ import {
   SettingsContext,
   useSimulation,
   usePaperItems,
+  useResize,
   useInteractiveGraph
 } from './../utils';
-import { useResize } from '../utils/resize';
 
 type CanvasProps = {
   data: KeyValueContainer<Node>;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { select } from 'd3';
-import { SettingsContext } from './settings';
+import { SettingsContext } from './../settings';
 
 export const useResize = () => {
   const { config: { bounds } } = React.useContext(SettingsContext);
