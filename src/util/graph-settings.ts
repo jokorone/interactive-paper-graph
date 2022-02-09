@@ -1,6 +1,6 @@
 import React from "react"
 
-import type { SimulationSettings } from "../lib"
+import { SimulationSettings, useGraphSettings } from "../lib"
 
 const initialSimulationSettings = {
   chargeForceStrength: -120,
@@ -14,18 +14,20 @@ const initialSimulationSettings = {
 }
 
 export const useSimulationSettings = () => {
-  const [
-    SimulationSettings,
-    _setSimulationSettings
-  ] = React.useState<SimulationSettings>(initialSimulationSettings);
+  // const [
+  //   simulationSettings,
+  //   _setSimulationSettings
+  // ] = React.useState<SimulationSettings>(initialSimulationSettings);
 
-  const updateGraphSetting = (
-    key: keyof SimulationSettings,
-    value: number
-  ) => _setSimulationSettings(settings => ({
-    ...settings,
-    [key]: value
-  }));
+  // const updateGraphSetting = (
+  //   key: keyof SimulationSettings,
+  //   value: number
+  // ) => _setSimulationSettings(settings => ({
+  //   ...settings,
+  //   [key]: value
+  // }));
 
-  return { SimulationSettings, updateGraphSetting };
+
+
+  return useGraphSettings();
 }

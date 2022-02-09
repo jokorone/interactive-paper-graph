@@ -5,7 +5,7 @@ import { deepmerge } from 'deepmerge-ts'
 import { SettingsContext, useGraphData } from '../utils';
 
 import { RawNode, RawLink, InteractionHandlers } from './../models';
-import { DefaultNetworkSimulationSettings } from '../defaults';
+import { DefaultSettings } from '../defaults';
 
 type DefaultGraphProps =  {
   data: {
@@ -13,7 +13,7 @@ type DefaultGraphProps =  {
     links: RawLink[]
   },
   config?: {
-    colors?: typeof DefaultNetworkSimulationSettings.config.colors,
+    colors?: typeof DefaultSettings.config.colors,
     bounds?: {
       width?: number;
       height?: number;
@@ -43,23 +43,22 @@ type DefaultGraphProps =  {
           show?: boolean;
       };
     };
-    graph?: typeof DefaultNetworkSimulationSettings.config.graph
+    graph?: typeof DefaultSettings.config.graph
   },
   handlers?: InteractionHandlers,
 };
 export const NetworkGraph = (props: DefaultGraphProps) => {
 
-  const { data: _data, ...userSettings } = props,
-    data = useGraphData(_data),
+  const data = useGraphData(props.data),
     initialized = Object.keys(data).length;
 
-  const [ settings, setSettings ] = React.useState(DefaultNetworkSimulationSettings);
+  const [ settings, setSettings ] = React.useState(DefaultSettings);
 
   const applyProps = React.useCallback(
     () => {
       setSettings(deepmerge(
-        DefaultNetworkSimulationSettings,
-        userSettings as typeof DefaultNetworkSimulationSettings
+        DefaultSettings,
+        props as typeof DefaultSettings
       ));
     },
     [props]

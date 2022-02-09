@@ -7,8 +7,9 @@ export const useResize = () => {
 
   const fixAspectRatio = (ref: HTMLCanvasElement, context: CanvasRenderingContext2D) => {
     let { width, height } = bounds;
+    console.log(bounds);
 
-    if (typeof bounds.resize === 'boolean') {
+    if (typeof bounds.resize === 'boolean' && bounds.resize) {
       width = window.innerWidth;
       height = window.innerHeight;
     } else {

@@ -24,7 +24,7 @@ export const SimulationSettings = (props: ReturnType<typeof useSimulationSetting
           <React.Fragment key={key}>
             <SliderInput
               name={key}
-              value={props.SimulationSettings[key]}
+              value={props.simulationSettings[key]}
               config={config}
               handler={handleSimulationSettingsInput(key)}
             />

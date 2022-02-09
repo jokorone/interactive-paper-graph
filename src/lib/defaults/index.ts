@@ -111,7 +111,7 @@ export const DefaultInteractionHandlers = {
   }
 }
 
-export const DefaultNetworkSimulationSettings = {
+export const DefaultSettings = {
   config: {
     colors: {
       canvas: 'black',

@@ -54,7 +54,7 @@ function App() {
   }
 
   const settings = {
-    graph: handleSettings.SimulationSettings,
+    graph: handleSettings.simulationSettings,
     paper: {
       node: {
         radius: 4,
@@ -100,7 +100,7 @@ function App() {
         }}
         handlers={{
           hover: { handle: handlers.onHover },
-          pan: { use: 'paper', handle: handlers.onPan },
+          pan:   { use: 'paper', handle: handlers.onPan },
           click: { handle: handlers.onClick }
         }}
       />
