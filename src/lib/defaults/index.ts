@@ -93,11 +93,9 @@ const ClickHandler = (pos: [number, number], target?: Node) => {}
 
 export const DefaultInteractionHandlers = {
   pan: {
-    use: 'paper',
     handle: PanHandler
   },
   zoom: {
-    use: 'paper',
     handle: ZoomHandler
   },
   drag: {

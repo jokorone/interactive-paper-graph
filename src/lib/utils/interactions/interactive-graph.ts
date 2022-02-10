@@ -84,10 +84,7 @@ export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
       .on('end', stop);
   }
 
-  const handleInteraction = (
-    current: Node,
-    item: paper.Path,
-  ) => {
+  const handleInteraction = (current: Node, item: paper.Path) => {
     const
       isHovered = mouse.current!.intersects(item),
       isDragged = current.id === draggedNode.current?.id;
@@ -102,7 +99,8 @@ export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
         d3node = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance),
         target = d3node && data[d3node.id];
 
-      handlers.click.handle([ x, y ], target);
+      Promise.resolve()
+        .then(() => handlers.click.handle([ x, y ], target));
     }
   }
 
