@@ -1,10 +1,11 @@
-import { useSimulationSettings } from '../../util/graph-settings';
+import { useGraphSettings } from '../../lib';
+
 import { useTheme } from '../../util/theme';
 import { DarkmodeToggle } from './darkmode-toggle';
 import { SimulationSettings } from './graph-settings';
 
 export const SettingsContainer = (
-    props: ReturnType<typeof useSimulationSettings> & ReturnType<typeof useTheme>
+    props: ReturnType<typeof useGraphSettings> & ReturnType<typeof useTheme>
   ) => {
 
   return(<>

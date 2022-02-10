@@ -33,6 +33,8 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
 
   const attachForces = React.useCallback(
     () => {
+      console.log('attach forces');
+
       simulation
         .force('link', forces.forceLink
           .distance(settings.linkDistance)
@@ -48,16 +50,16 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x(bounds.width / 2))
+          .x((bounds.resize ? window.innerWidth : bounds.width) / 2))
         .force('forceY', forces.forceY
-          .y(bounds.height / 2));
+          .y((bounds.resize ? window.innerHeight : bounds.height) / 2))
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();
 
-      return () => simulation.restart() && void 0;
+      // return () => simulation.restart() && void 0;
     },
-    [simulation, forces, settings]
+    [simulation, forces]
   );
   React.useEffect(attachForces, [attachForces]);
 

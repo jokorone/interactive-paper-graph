@@ -3,15 +3,15 @@ import React from 'react';
 import { GraphSettingInputConfig, SimulationSettingsEnum as GraphSetting, SimulationSettingsInputs, humanReadable } from "../../lib";
 
 import { ReactComponent as SettingsSVG } from './../../icons/settings.svg';
-import { useSimulationSettings } from '../../util/graph-settings';
+import { useGraphSettings } from '../../lib';
 
-export const SimulationSettings = (props: ReturnType<typeof useSimulationSettings>) => {
+export const SimulationSettings = (props: ReturnType<typeof useGraphSettings>) => {
 
   const [ visible, setVisible ] = React.useState(false);
 
   const handleSimulationSettingsInput = (key: GraphSetting) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      props.updateGraphSetting(key, +event.target.value);
+      props.updateSimulationSetting(key, +event.target.value);
     }
   }
 

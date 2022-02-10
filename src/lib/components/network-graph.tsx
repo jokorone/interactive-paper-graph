@@ -46,19 +46,21 @@ type DefaultGraphProps =  {
     graph?: typeof DefaultSettings.config.graph
   },
   handlers?: InteractionHandlers,
-};
-export const NetworkGraph = (props: DefaultGraphProps) => {
+}
 
-  const data = useGraphData(props.data),
+type Settings = Omit<DefaultGraphProps, 'data'> & typeof DefaultSettings;
+
+export const NetworkGraph = React.memo((props: DefaultGraphProps) => {
+  const [ settings, setSettings ] = React.useState<Settings>(DefaultSettings);
+
+  const data    = useGraphData(props.data),
     initialized = Object.keys(data).length;
-
-  const [ settings, setSettings ] = React.useState(DefaultSettings);
 
   const applyProps = React.useCallback(
     () => {
       setSettings(deepmerge(
         DefaultSettings,
-        props as typeof DefaultSettings
+        props as Settings
       ));
     },
     [props]
@@ -72,4 +74,4 @@ export const NetworkGraph = (props: DefaultGraphProps) => {
       }
     </SettingsContext.Provider>
   );
-};
+});

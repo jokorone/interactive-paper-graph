@@ -46,6 +46,8 @@ export const Canvas = React.memo((
 
   const setupCanvas = React.useCallback(
     () => {
+      console.log('setup');
+
       items.current = paper.createPaperItems();
       project.current!.view.onFrame = draw;
 
@@ -60,6 +62,7 @@ export const Canvas = React.memo((
     [data]
   );
   React.useEffect(setupCanvas, [setupCanvas]);
+  console.log('canvas');
 
   const updateCanvasTheme = React.useCallback(
     () => {
