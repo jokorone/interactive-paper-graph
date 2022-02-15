@@ -10,11 +10,12 @@ import {
 } from 'd3';
 
 import { Node, Link, KeyValueContainer } from '../models';
-import { SettingsContext } from './settings';
+import { DefaultSettings } from '..';
 
-export const useSimulation = (data: KeyValueContainer<Node>) => {
-  const { config: { bounds, graph: { settings } } } = React.useContext(SettingsContext);
-
+export const useSimulation = (
+  data: KeyValueContainer<Node>,
+  options = DefaultSettings
+) => {
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
     []
@@ -32,8 +33,7 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
   );
 
   const attachForces = React.useCallback(
-    () => {
-      console.log('attach forces');
+    (settings: typeof options.config.graph.settings) => {
 
       simulation
         .force('link', forces.forceLink
@@ -50,9 +50,9 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x((bounds.resize ? window.innerWidth : bounds.width) / 2))
+          .x((options.config.bounds.resize ? window.innerWidth : options.config.bounds.width) / 2))
         .force('forceY', forces.forceY
-          .y((bounds.resize ? window.innerHeight : bounds.height) / 2))
+          .y((options.config.bounds.resize ? window.innerHeight : options.config.bounds.height) / 2))
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();
@@ -61,7 +61,6 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
     },
     [simulation, forces]
   );
-  React.useEffect(attachForces, [attachForces]);
 
   const attachData = React.useCallback(
     () => {
@@ -83,5 +82,5 @@ export const useSimulation = (data: KeyValueContainer<Node>) => {
   );
   React.useEffect(attachData, [attachData]);
 
-  return simulation;
+  return {simulation, attachForces};
 }

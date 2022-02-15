@@ -2,39 +2,83 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { Node, KeyValueContainer, PaperModel } from './../models';
+import { Node, PaperModel, InteractionHandlers, RawLink, RawNode } from './../models';
 
 import {
-  SettingsContext,
   useSimulation,
   usePaperItems,
   useResize,
-  useInteractiveGraph
+  useInteractiveGraph,
+  useGraphData
 } from './../utils';
 
-type CanvasProps = {
-  data: KeyValueContainer<Node>;
+import { DefaultSettings } from '../defaults';
+import { deepmerge } from 'deepmerge-ts';
+
+type DefaultGraphProps =  {
+  data: {
+    nodes: RawNode[],
+    links: RawLink[]
+  },
+  config?: {
+    colors?: typeof DefaultSettings.config.colors,
+    bounds?: {
+      width?: number;
+      height?: number;
+      resize?: {
+          width: boolean;
+          height: boolean;
+      } | boolean,
+    },
+    paper?: {
+      node?: {
+        radius?: number;
+        opacity?: number;
+        highlight?: {
+            radius?: number;
+            opacity?: number;
+        };
+      };
+      links?: {
+          stroke?: number;
+          opacity?: number;
+          highlight?: {
+              stroke?: number;
+              opacity?: number;
+          };
+      };
+      label?: {
+          show?: boolean;
+      };
+    };
+    graph?: typeof DefaultSettings.config.graph
+  },
+  handlers?: InteractionHandlers,
 }
-export const Canvas = React.memo((
-  { data }: CanvasProps
-) => {
-  const { config } = React.useContext(SettingsContext),
+
+type Settings = Omit<DefaultGraphProps, 'data'> & typeof DefaultSettings;
+
+export const Canvas = React.memo((props: DefaultGraphProps) => {
+
+  const settings = deepmerge(DefaultSettings, props as Settings),
+
     ref            = React.useRef<HTMLCanvasElement | null>(null),
     project        = React.useRef<paper.Project | null>(),
     items          = React.useRef<PaperModel | null>(),
     context        = React.useRef<CanvasRenderingContext2D | null>(),
     interaction    = React.useRef<ReturnType<typeof initHandlers>>(),
 
-    simulation     = useSimulation(data),
-    paper          = usePaperItems(data),
-    initHandlers   = useInteractiveGraph(data),
-    resizeHandler  = useResize();
+    data           = useGraphData(props.data),
+    sim            = useSimulation(data, settings),
+    paper          = usePaperItems(data, settings),
+    initHandlers   = useInteractiveGraph(data, settings.handlers),
+    resizeHandler  = useResize(settings.config.bounds);
 
   const resizeCanvas = () => {
     resizeHandler(ref.current!, context.current!);
   }
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     project.current = new Paper.Project(ref.current!);
     context.current = ref.current!.getContext('2d');
 
@@ -46,7 +90,7 @@ export const Canvas = React.memo((
 
   const setupCanvas = React.useCallback(
     () => {
-      console.log('setup');
+      if (Object.keys(data).length === 0) return;
 
       items.current = paper.createPaperItems();
       project.current!.view.onFrame = draw;
@@ -54,7 +98,7 @@ export const Canvas = React.memo((
       interaction.current = initHandlers(
         project.current!,
         ref.current!,
-        simulation
+        sim.simulation
       );
 
       return () => project.current!.clear();
@@ -62,18 +106,22 @@ export const Canvas = React.memo((
     [data]
   );
   React.useEffect(setupCanvas, [setupCanvas]);
-  console.log('canvas');
 
   const updateCanvasTheme = React.useCallback(
     () => {
       select(ref.current).transition()
         .duration(100)
-        .style('background', config.colors.canvas);
+        .style('background', settings.config.colors.canvas);
     },
-    [config.colors]
+    [settings.config.colors]
   );
-
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
+
+  const updateSimulationSettings = React.useCallback(
+    () => sim.attachForces(props.config!.graph!.settings),
+    [props.config?.graph?.settings]
+  );
+  React.useEffect(updateSimulationSettings, [updateSimulationSettings]);
 
   function draw(frameEvent: {
     count: number,
@@ -82,7 +130,7 @@ export const Canvas = React.memo((
   }) {
     context.current!.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-    if ( !simulation.nodes().length
+    if ( !sim.simulation.nodes().length
       || !items.current
       || !interaction.current) return;
 
@@ -90,7 +138,7 @@ export const Canvas = React.memo((
 
     let index = 0,
         highlights: Node[] = [];
-    for (const d3node of simulation.nodes()) {
+    for (const d3node of sim.simulation.nodes()) {
 
       const { node, links, ...currentItem } = items.current![index];
 
@@ -111,7 +159,7 @@ export const Canvas = React.memo((
       if (currentItem.is.highlight) {
         highlights.push(currentItem.payload);
 
-        if (config.paper.label.show && !label) {
+        if (settings.config.paper.label.show && !label) {
           label
             = items.current![index].label
             = paper.create.label(d3node.id);

@@ -3,15 +3,11 @@ import Paper from "paper";
 
 import { D3DragEvent } from "d3-drag";
 import { Node } from "./../../models";
-import { SettingsContext } from "../settings";
+import { DefaultInteractionHandlers } from "../..";
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
-export const usePan = () => {
-  const {
-    handlers: { pan: settings }
-  } = React.useContext(SettingsContext);
-
+export const usePan = (pan = DefaultInteractionHandlers.pan) => {
   const offset = React.useRef<paper.Point>({} as paper.Point);
 
   const createPanHandler = (view: paper.View) => {
@@ -19,7 +15,7 @@ export const usePan = () => {
       const point = new Paper.Point(Math.floor(e.x), Math.floor(e.y));
       offset.current = view.viewToProject(point);
 
-      settings.handle.panstart();
+      pan.handle.panstart();
     }
 
     const panning = (e: DragEvent) => {
@@ -28,11 +24,11 @@ export const usePan = () => {
         delta = new Paper.Point(e.x, e.y).subtract(panReference);
 
       view.translate(delta);
-      settings.handle.panning();
+      pan.handle.panning();
     }
 
     const panstop = (e: DragEvent) => {
-      settings.handle.panstop();
+      pan.handle.panstop();
     }
 
     return { panstart, panning, panstop }

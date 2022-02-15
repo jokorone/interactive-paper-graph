@@ -10,10 +10,10 @@ import {
 
 import { KeyValueContainer, Link, Node } from './../../models';
 
-import { SettingsContext } from './../settings';
 import { useZoom, useMouse, usePan, useDrag } from './../interactions';
 
 import { cancelEvent } from './../helpers';
+import { DefaultSettings } from '../..';
 
 const InteractionConfig = {
   Zoom: {
@@ -27,16 +27,18 @@ const InteractionConfig = {
 
 export type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
-export const useInteractiveGraph = (data: KeyValueContainer<Node>) => {
+export const useInteractiveGraph = (
+  data: KeyValueContainer<Node>,
+  handlers = DefaultSettings.handlers
+) => {
   const
-    { handlers } = React.useContext(SettingsContext),
     { mouse,
       createMouse,
       createMouseMoveHandler } = useMouse(),
     { draggedNode,
-      createDragHandler } = useDrag(),
+      createDragHandler } = useDrag(handlers.drag),
       createZoomHandler = useZoom(),
-      createPanHandler = usePan();
+      createPanHandler = usePan(handlers.pan);
 
   function dragOrPan(
     view: paper.View,

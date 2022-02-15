@@ -1,14 +1,13 @@
 import React from 'react';
 
 import mockData from './data/mock.json';
-import { NetworkGraph, Node, useGraphSettings } from './lib';
+import { Canvas, Node, useGraphSettings } from './lib';
 import { SettingsContainer } from './components';
 
 import { useTheme } from './util/theme';
 import { InteractionOutlet } from './components/overlays/interaction-outlet';
 import { MarkdownContent } from './components/content/markdown-content';
 import { useColors } from './util/colors';
-
 
 const dataset = (size = 1) => {
 
@@ -115,7 +114,7 @@ function App() {
       <InteractionOutlet highlight={highlight}/>
       <SettingsContainer {...settingsHandler}/>
 
-      <NetworkGraph
+      <Canvas
         data={dataset()}
         config={{
           bounds: {

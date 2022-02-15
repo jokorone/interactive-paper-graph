@@ -1,9 +1,9 @@
 import React from 'react';
-import { select } from 'd3';
-import { SettingsContext } from './../settings';
 
-export const useResize = () => {
-  const { config: { bounds } } = React.useContext(SettingsContext);
+import { select } from 'd3';
+import { DefaultSettings } from '../..';
+
+export const useResize = (bounds = DefaultSettings.config.bounds) => {
 
   const fixAspectRatio = (ref: HTMLCanvasElement, context: CanvasRenderingContext2D) => {
     let { width, height } = bounds;

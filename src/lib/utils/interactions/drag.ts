@@ -4,13 +4,12 @@ import Paper from "paper";
 import { D3DragEvent } from "d3-drag";
 import { Simulation } from "d3-force";
 
-import { SettingsContext } from "./../";
 import { Node, Link } from './../../models';
+import { DefaultInteractionHandlers } from "interactive-force-graph";
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
-export const useDrag = () => {
-  const { handlers: { drag } } = React.useContext(SettingsContext);
+export const useDrag = (drag = DefaultInteractionHandlers.drag) => {
   const draggedNode = React.useRef<Node | null>(null);
 
   const createDragHandler = (mouse: paper.Path, simulation: Simulation<Node, Link>) => {
