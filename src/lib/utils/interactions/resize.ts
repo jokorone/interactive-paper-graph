@@ -3,18 +3,14 @@ import React from 'react';
 import { select } from 'd3';
 import { DefaultSettings } from '../..';
 
-export const useResize = (bounds = DefaultSettings.config.bounds) => {
+export const useResize = (bounds = DefaultSettings.bounds) => {
 
   const fixAspectRatio = (ref: HTMLCanvasElement, context: CanvasRenderingContext2D) => {
     let { width, height } = bounds;
-    console.log(bounds);
 
-    if (typeof bounds.resize === 'boolean' && bounds.resize) {
+    if (bounds.full) {
       width = window.innerWidth;
       height = window.innerHeight;
-    } else {
-      bounds.resize.width && (width = window.innerWidth);
-      bounds.resize.height && (height = window.innerHeight);
     }
 
     if (window.devicePixelRatio) {

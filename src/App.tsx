@@ -81,28 +81,27 @@ function App() {
       setSelected(target || null);
     };
 
-  const settings = {
-    graph: simulationSettings.simulationSettings,
-    paper: {
-      node: {
-        radius: 4,
-        opacity: .8,
-        // highlight: {
-        //   radius: 5.5,
-        //   opacity: 1
-        // }
-      },
-      links: {
-        stroke: 1,
-        opacity: .6,
-        highlight: {
-          stroke: 1.5,
-          opacity: .9
-        }
-      },
-      label: {
-        show: false
+  const graphSettings = simulationSettings.simulationSettings;
+
+  const paperSettings = {
+    node: {
+      radius: 4,
+      opacity: .8,
+      highlight: {
+        radius: 5.5,
+        opacity: 1
       }
+    },
+    links: {
+      stroke: 1,
+      opacity: .6,
+      highlight: {
+        stroke: 1.5,
+        opacity: .9
+      }
+    },
+    label: {
+      show: false
     }
   }
 
@@ -116,16 +115,14 @@ function App() {
 
       <Canvas
         data={dataset()}
-        config={{
-          bounds: {
-            resize: true
-          },
-          colors,
-          graph: {
-            settings: settings.graph
-          },
-          paper: settings.paper
+        bounds={{
+          full: true,
+          width: 800,
+          height: 600,
         }}
+        colors={colors}
+        paper={paperSettings}
+        graph={graphSettings}
         handlers={{
           hover: { handle: onHover },
           pan:   { handle: onPan },

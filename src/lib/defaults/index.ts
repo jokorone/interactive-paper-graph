@@ -110,40 +110,36 @@ export const DefaultInteractionHandlers = {
 }
 
 export const DefaultSettings = {
-  config: {
-    colors: {
-      canvas: 'black',
-      items: 'white',
+  bounds: {
+    width: 800,
+    height: 600,
+    full: false,
+  },
+  colors: {
+    canvas: 'black',
+    items: 'white',
+  },
+  paper: {
+    node: {
+      radius: 3,
+      opacity: .8,
+      highlight: {
+        radius: 4,
+        opacity: 1,
+      }
     },
-    bounds: {
-      width: 800,
-      height: 600,
-      resize: {  width: false, height: false }
-    },
-    paper: {
-      node: {
-        radius: 3,
+    links: {
+      stroke: 1,
+      opacity: .5,
+      highlight: {
+        stroke: 1.5,
         opacity: .9,
-        highlight: {
-            radius: 5,
-            opacity: 1,
-        }
-      },
-      links: {
-        stroke: 1,
-        opacity: .5,
-        highlight: {
-          stroke: 1.5,
-          opacity: .9,
-        }
-      },
-      label: {
-        show: true,
-      },
+      }
     },
-    graph: {
-      settings: DefaultSimulationSettings as typeof DefaultSimulationSettings
+    label: {
+      show: true,
     },
   },
-  handlers: DefaultInteractionHandlers,
-};
+  graph: DefaultSimulationSettings,
+  handlers: DefaultInteractionHandlers
+}

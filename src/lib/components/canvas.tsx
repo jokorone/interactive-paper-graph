@@ -2,7 +2,7 @@ import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
 
-import { Node, PaperModel, InteractionHandlers, RawLink, RawNode } from './../models';
+import { InteractionHandlers, Node, PaperModel, RawLink, RawNode } from './../models';
 
 import {
   useSimulation,
@@ -15,45 +15,44 @@ import {
 import { DefaultSettings } from '../defaults';
 import { deepmerge } from 'deepmerge-ts';
 
-type DefaultGraphProps =  {
+type DefaultGraphProps = {
+  bounds?: {
+      width?: number;
+      height?: number;
+      full?: boolean;
+  };
+  colors?: {
+      canvas?: string;
+      items?: string;
+  };
+  graph?: typeof DefaultSettings.graph;
+  handlers?: InteractionHandlers;
+  paper?: {
+    node?: {
+      radius?: number;
+      opacity?: number;
+      highlight?: {
+          radius?: number;
+          opacity?: number;
+      };
+    };
+    links?: {
+      stroke?: number;
+      opacity?: number;
+      highlight?: {
+          stroke?: number;
+          opacity?: number;
+      };
+    };
+    label?: {
+      show?: boolean
+    };
+  };
+} & {
   data: {
     nodes: RawNode[],
     links: RawLink[]
-  },
-  config?: {
-    colors?: typeof DefaultSettings.config.colors,
-    bounds?: {
-      width?: number;
-      height?: number;
-      resize?: {
-          width: boolean;
-          height: boolean;
-      } | boolean,
-    },
-    paper?: {
-      node?: {
-        radius?: number;
-        opacity?: number;
-        highlight?: {
-            radius?: number;
-            opacity?: number;
-        };
-      };
-      links?: {
-          stroke?: number;
-          opacity?: number;
-          highlight?: {
-              stroke?: number;
-              opacity?: number;
-          };
-      };
-      label?: {
-          show?: boolean;
-      };
-    };
-    graph?: typeof DefaultSettings.config.graph
-  },
-  handlers?: InteractionHandlers,
+  }
 }
 
 type Settings = Omit<DefaultGraphProps, 'data'> & typeof DefaultSettings;
@@ -72,7 +71,7 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
     sim            = useSimulation(data, settings),
     paper          = usePaperItems(data, settings),
     initHandlers   = useInteractiveGraph(data, settings.handlers),
-    resizeHandler  = useResize(settings.config.bounds);
+    resizeHandler  = useResize(settings.bounds);
 
   const resizeCanvas = () => {
     resizeHandler(ref.current!, context.current!);
@@ -111,15 +110,15 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
     () => {
       select(ref.current).transition()
         .duration(100)
-        .style('background', settings.config.colors.canvas);
+        .style('background', settings.colors.canvas);
     },
-    [settings.config.colors]
+    [settings.colors]
   );
   React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
 
   const updateSimulationSettings = React.useCallback(
-    () => sim.attachForces(props.config!.graph!.settings),
-    [props.config?.graph?.settings]
+    () => sim.attachForces(settings.graph),
+    [props.graph]
   );
   React.useEffect(updateSimulationSettings, [updateSimulationSettings]);
 
@@ -159,7 +158,7 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
       if (currentItem.is.highlight) {
         highlights.push(currentItem.payload);
 
-        if (settings.config.paper.label.show && !label) {
+        if (settings.paper.label.show && !label) {
           label
             = items.current![index].label
             = paper.create.label(d3node.id);

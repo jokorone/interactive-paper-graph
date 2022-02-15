@@ -33,8 +33,7 @@ export const useSimulation = (
   );
 
   const attachForces = React.useCallback(
-    (settings: typeof options.config.graph.settings) => {
-
+    (settings: typeof DefaultSettings.graph) => {
       simulation
         .force('link', forces.forceLink
           .distance(settings.linkDistance)
@@ -50,14 +49,14 @@ export const useSimulation = (
           .iterations(1))
         // if node has no links, maybe give other x/y force
         .force('forceX', forces.forceX
-          .x((options.config.bounds.resize ? window.innerWidth : options.config.bounds.width) / 2))
+          .x((options.bounds.full ? window.innerWidth : options.bounds.width) / 2))
         .force('forceY', forces.forceY
-          .y((options.config.bounds.resize ? window.innerHeight : options.config.bounds.height) / 2))
+          .y((options.bounds.full ? window.innerHeight : options.bounds.height) / 2))
 
       simulation.alphaDecay(.01);
       simulation.alpha(.3).restart();
 
-      // return () => simulation.restart() && void 0;
+      return () => simulation.restart() && void 0;
     },
     [simulation, forces]
   );
