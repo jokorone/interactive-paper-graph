@@ -5,7 +5,7 @@ import { D3DragEvent } from "d3-drag";
 import { Simulation } from "d3-force";
 
 import { Node, Link } from './../../models';
-import { DefaultInteractionHandlers } from "interactive-force-graph";
+import { DefaultInteractionHandlers } from "../../defaults";
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Paper from 'paper';
 
-import { KeyValueContainer, Node, PaperModel } from '../models';
+import { KeyValueContainer, Node, PaperModel, PaperLink } from '../models';
 
 import { makeIterable } from './data';
 import { DefaultSettings } from '..';
@@ -21,6 +21,22 @@ export const usePaperItems = (
   );
   React.useEffect(updateColors, [updateColors]);
 
+  const createPaperNode = (node: Node, links: KeyValueContainer<PaperLink>) => {
+    return {
+      id: node.id,
+      links,
+      node: create.node(),
+      payload: node,
+      hints: null,
+      label: null,
+      is: {
+        hovered: false,
+        dragged: false,
+        highlight: false,
+      },
+    }
+  }
+
   const createPaperItems = React.useCallback(
     (): PaperModel => Object.entries(data).map(([ name, node ]) => {
 
@@ -36,19 +52,7 @@ export const usePaperItems = (
       const _links = Object.values(node.links)
         .map(d3ToPaperLink);
 
-      return {
-        id: name,
-        node: create.node(),
-        links: Object.fromEntries(_links),
-        label: null,
-        hints: null,
-        payload: node,
-        is: {
-          hovered: false,
-          dragged: false,
-          highlight: false,
-        },
-      }
+      return createPaperNode(node, Object.fromEntries(_links));
     }),
     [data]
   );
@@ -127,6 +131,7 @@ export const usePaperItems = (
   }, [makeItemUpdater]);
 
   return {
+    createPaperNode,
     createPaperItems,
     getItemUpdater: () => itemUpdater.current,
     create

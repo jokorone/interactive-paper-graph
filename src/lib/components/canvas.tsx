@@ -1,8 +1,7 @@
 import React from 'react';
 import Paper from 'paper';
 import { select } from 'd3';
-
-import { InteractionHandlers, Node, PaperModel, RawLink, RawNode } from './../models';
+import { deepmerge } from 'deepmerge-ts';
 
 import {
   useSimulation,
@@ -13,9 +12,9 @@ import {
 } from './../utils';
 
 import { DefaultSettings } from '../defaults';
-import { deepmerge } from 'deepmerge-ts';
+import { InteractionHandlers, Node, PaperModel, RawLink, RawNode } from './../models';
 
-type DefaultGraphProps = {
+type GraphProps = {
   bounds?: {
       width?: number;
       height?: number;
@@ -48,16 +47,15 @@ type DefaultGraphProps = {
       show?: boolean
     };
   };
-} & {
   data: {
-    nodes: RawNode[],
-    links: RawLink[]
+    nodes: RawNode[];
+    links: RawLink[];
   }
-}
+};
+// omit data and create union type to overwrite optional props
+type Settings = Omit<GraphProps, 'data'> & typeof DefaultSettings;
 
-type Settings = Omit<DefaultGraphProps, 'data'> & typeof DefaultSettings;
-
-export const Canvas = React.memo((props: DefaultGraphProps) => {
+export const Canvas = React.memo((props: GraphProps) => {
 
   const settings = deepmerge(DefaultSettings, props as Settings),
 
@@ -67,42 +65,35 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
     context        = React.useRef<CanvasRenderingContext2D | null>(),
     interaction    = React.useRef<ReturnType<typeof initHandlers>>(),
 
-    data           = useGraphData(props.data),
+  { data, create } = useGraphData(props.data),
     sim            = useSimulation(data, settings),
     paper          = usePaperItems(data, settings),
     initHandlers   = useInteractiveGraph(data, settings.handlers),
     resizeHandler  = useResize(settings.bounds);
 
-  const resizeCanvas = () => {
-    resizeHandler(ref.current!, context.current!);
-  }
-
-  React.useLayoutEffect(() => {
-    project.current = new Paper.Project(ref.current!);
-    context.current = ref.current!.getContext('2d');
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    return () => window.removeEventListener('resize', resizeCanvas);
-  }, []);
+  const resizeCanvas = () => resizeHandler(ref.current!, context.current!);
 
   const setupCanvas = React.useCallback(
     () => {
-      if (Object.keys(data).length === 0) return;
-
-      items.current = paper.createPaperItems();
-      project.current!.view.onFrame = draw;
-
+      project.current     = new Paper.Project(ref.current!);
+      context.current     = ref.current!.getContext('2d');
+      items.current       = paper.createPaperItems();
       interaction.current = initHandlers(
         project.current!,
         ref.current!,
         sim.simulation
       );
 
-      return () => project.current!.clear();
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      project.current!.view.onFrame = draw;
+
+      return () => {
+        project.current!.clear();
+        window.removeEventListener('resize', resizeCanvas);
+      }
     },
-    [data]
+    []
   );
   React.useEffect(setupCanvas, [setupCanvas]);
 
@@ -114,13 +105,13 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
     },
     [settings.colors]
   );
-  React.useEffect(updateCanvasTheme, [updateCanvasTheme]);
+  React.useLayoutEffect(updateCanvasTheme, [updateCanvasTheme]);
 
   const updateSimulationSettings = React.useCallback(
     () => sim.attachForces(settings.graph),
     [props.graph]
   );
-  React.useEffect(updateSimulationSettings, [updateSimulationSettings]);
+  React.useLayoutEffect(updateSimulationSettings, [updateSimulationSettings]);
 
   function draw(frameEvent: {
     count: number,
@@ -128,10 +119,6 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
     delta: number,
   }) {
     context.current!.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    if ( !sim.simulation.nodes().length
-      || !items.current
-      || !interaction.current) return;
 
     const update = paper.getItemUpdater()!;
 
@@ -143,9 +130,7 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
 
       let label = currentItem.label;
 
-      const { isHovered, isDragged } = interaction.current.handle(
-        d3node, node
-      );
+      const { isHovered, isDragged } = interaction.current!.handle(d3node, node);
 
       currentItem.is = {
         hovered: isHovered,
@@ -185,9 +170,17 @@ export const Canvas = React.memo((props: DefaultGraphProps) => {
       ++index;
     }
 
-    (frameEvent.count % 16 === 0)
+    (frameEvent.count % 24 === 0)
       && interaction.current!.emit(highlights.pop());
   }
 
-  return (<canvas ref={ref}></canvas>);
+  return (<>
+    <button className='absolute bottom-2 left-2 w-12' onClick={() => {
+
+      const node = create.node();
+      items.current?.push(paper.createPaperNode(node, {}));
+
+    }}>Add Node</button>
+    <canvas ref={ref}></canvas>
+  </>);
 });

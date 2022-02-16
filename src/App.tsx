@@ -42,6 +42,28 @@ const initialSimulationSettings = {
   forceY: Math.floor(window.innerHeight * .5),
 }
 
+const intitialPaperSettings = {
+  node: {
+    radius: 4,
+    opacity: .8,
+    highlight: {
+      radius: 5.5,
+      opacity: 1
+    }
+  },
+  links: {
+    stroke: 1,
+    opacity: .6,
+    highlight: {
+      stroke: 1.5,
+      opacity: .9
+    }
+  },
+  label: {
+    show: false
+  }
+}
+
 function App() {
   const
     theme = useTheme(),
@@ -70,6 +92,7 @@ function App() {
       zoomstop: () => {console.log('zoomstop')},
     },
     onHover = (target: Node | undefined) => {
+
       if (target && target.id !== highlight?.id) {
         setHighlight(target);
       }
@@ -81,29 +104,6 @@ function App() {
       setSelected(target || null);
     };
 
-  const graphSettings = simulationSettings.simulationSettings;
-
-  const paperSettings = {
-    node: {
-      radius: 4,
-      opacity: .8,
-      highlight: {
-        radius: 5.5,
-        opacity: 1
-      }
-    },
-    links: {
-      stroke: 1,
-      opacity: .6,
-      highlight: {
-        stroke: 1.5,
-        opacity: .9
-      }
-    },
-    label: {
-      show: false
-    }
-  }
 
   return (
     <div className="bg-gray-300 dark:bg-gray-800 h-screen w-screen">
@@ -121,8 +121,8 @@ function App() {
           height: 600,
         }}
         colors={colors}
-        paper={paperSettings}
-        graph={graphSettings}
+        paper={intitialPaperSettings}
+        graph={settingsHandler.simulationSettings}
         handlers={{
           hover: { handle: onHover },
           pan:   { handle: onPan },

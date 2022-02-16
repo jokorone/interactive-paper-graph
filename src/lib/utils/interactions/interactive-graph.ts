@@ -29,7 +29,11 @@ export type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement,
 
 export const useInteractiveGraph = (
   data: KeyValueContainer<Node>,
-  handlers = DefaultSettings.handlers
+  handlers = DefaultSettings.handlers,
+  linkHandler = {
+    intersectionObserver: ({subject}: DragEvent) => {},
+    cleanupDragSubject: () => {}
+  }
 ) => {
   const
     { mouse,
@@ -37,8 +41,8 @@ export const useInteractiveGraph = (
       createMouseMoveHandler } = useMouse(),
     { draggedNode,
       createDragHandler } = useDrag(handlers.drag),
-      createZoomHandler = useZoom(),
-      createPanHandler = usePan(handlers.pan);
+      createPanHandler = usePan(handlers.pan),
+      createZoomHandler = useZoom();
 
   function dragOrPan(
     view: paper.View,
@@ -63,26 +67,28 @@ export const useInteractiveGraph = (
       cancelEvent(event.sourceEvent);
     }
 
-    const observe = (event: DragEvent) => {
+    const dragging = (event: DragEvent) => {
       (event.subject instanceof HTMLCanvasElement
-        ? onPan.panning
-        : onDrag.dragging
-      )(event);
+        ? [onPan.panning]
+        : [onDrag.dragging, linkHandler.intersectionObserver]
+      ).map(fn => fn(event));
+
       cancelEvent(event.sourceEvent);
     }
 
     const stop = (event: DragEvent) => {
       (event.subject instanceof HTMLCanvasElement
-        ? onPan.panstop
-        : onDrag.dragstop
-      )(event);
+        ? [onPan.panstop]
+        : [onDrag.dragstop, linkHandler.cleanupDragSubject]
+      ).map(fn => fn(event));
+
       cancelEvent(event.sourceEvent);
     }
 
     return drag<HTMLCanvasElement, Node, Node | HTMLCanvasElement>()
       .subject(selectTarget)
       .on('start', start)
-      .on('drag', observe)
+      .on('drag', dragging)
       .on('end', stop);
   }
 
@@ -101,12 +107,12 @@ export const useInteractiveGraph = (
         d3node = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance),
         target = d3node && data[d3node.id];
 
-      Promise.resolve()
+      Promise.resolve() //state dispatch handle synchronously
         .then(() => handlers.click.handle([ x, y ], target));
     }
   }
 
-  return (
+  return ( // initalize interaction handlers
     project: paper.Project,
     canvas: HTMLCanvasElement,
     simulation: Simulation<Node, Link>,

@@ -1,21 +1,47 @@
 import React from 'react';
-import { Node, RawNode, RawLink, KeyValueContainer } from '../models';
+import { Node, RawNode, RawLink, KeyValueContainer, Link } from '../models';
 
 export const makeIterable = (key: string) => <T>(value: T): [ string, T ] => [ key, value ];
 
 export const useGraphData = (source: { nodes: RawNode[], links: RawLink[] }) => {
-  const [ data, setData ] = React.useState<KeyValueContainer<Node>>({});
+  const [ data, setData ] = React.useState<KeyValueContainer<Node>>(fromRawData(source));
 
-  const createModel = React.useCallback(
-    () => {
-      setData(fromRawData(source));
-    },
-    []
-  );
+  const addNode = () => {
+    const i = Object.keys(data).length + 1;
 
-  React.useEffect(createModel, [createModel]);
+    const payload = {
+      id: `Node-${i}`,
+      group: 420,
+    };
 
-  return data;
+    const newNode: Node = {
+      ...payload,
+      payload,
+      links: {},
+      x: 0,
+      y: 0
+    };
+
+    setData(nodes => ({ ...nodes, [newNode.id]: newNode }));
+
+    return newNode;
+  }
+
+  const addLink = (n0: Node, n1: Node) => {
+    console.log('create-link');
+    let newlink: Link = {
+      source: n0,
+      target: n1,
+      value: 10
+    } as Link;
+
+    const sourceNode = data[newlink.source.id];
+
+    sourceNode.links[newlink.target.id] = newlink;
+}
+
+
+  return { data, create: { node: addNode, link: addLink }};
 }
 
 const fromRawData = (data: {

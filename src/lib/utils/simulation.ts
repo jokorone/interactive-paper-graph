@@ -73,7 +73,7 @@ export const useSimulation = (
       }
 
       simulation.nodes(nodes);
-      forces.forceLink.links(links);
+      forces.forceLink.links(links as any);
 
       simulation.alpha(.3).restart();
     },

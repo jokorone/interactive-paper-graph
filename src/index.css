@@ -5,7 +5,8 @@
 @layer components {
   * {
     @apply outline-none border-transparent
-    active:border-transparent active:outline-none;
+    active:border-transparent active:outline-none
+    focus:border-transparent focus:outline-none;
   }
 
   .icon {

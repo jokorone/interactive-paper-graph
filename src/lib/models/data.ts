@@ -1,12 +1,11 @@
-type d3Node = & d3.SimulationNodeDatum & d3.SubjectPosition
+type D3Node = d3.SimulationNodeDatum & d3.SubjectPosition
 
-
-export type Node = BaseNode<RawNode> & d3Node;
+export type Node = BaseNode<RawNode> & D3Node;
 export type Link = BaseLink<Node>;
 
 type BaseNode<T> = T & {
     payload: T,
-    links: KeyValueContainer<BaseLink<string>>,
+    links: KeyValueContainer<BaseLink<T>>,
   };
 
 type BaseLink<T> = {
@@ -19,7 +18,6 @@ export type RawNode = typeof InitialNode;
 export type RawLink = BaseLink<string>;
 
 export type GraphModel = KeyValueContainer<Node>;
-
 
 export type KeyValueContainer<T> = { [key: string]: T };
 
