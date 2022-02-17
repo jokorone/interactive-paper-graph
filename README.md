@@ -1,6 +1,10 @@
 # About
 
-This example app was developed to try out the possibilites of combining a canvas drawing library (PaperJS) with the data-vis capabilities of D3 by glueing them together using React Hooks.
+![Example App Screenshot](./docs/example_screenshot.png)
+
+[Example App Demo](https://jokorone.github.io/interactive-paper-graph)
+
+This example app was developed to try out the possibilites of combining a canvas drawing library ([PaperJS](http://paperjs.org/reference/)) with the data-vis capabilities of [D3](https://github.com/d3/d3-force) by glueing them together using [React Hooks](https://reactjs.org/docs/hooks-overview.html).
 
 A force directed graph is used to visualize the connections between objects in a network. By grouping the objects connected to each other in a natural way, a force directed graph is visually interesting and also makes it possible to discover subtle relationships between groups.
 
