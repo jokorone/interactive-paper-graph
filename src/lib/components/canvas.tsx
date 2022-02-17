@@ -83,7 +83,6 @@ export const Canvas = React.memo((props: GraphProps) => {
         ref.current!,
         sim.simulation
       );
-
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
       project.current!.view.onFrame = draw;

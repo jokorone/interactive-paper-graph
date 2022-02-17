@@ -49,7 +49,8 @@ export const usePaperItems = (
         });
       }
 
-      const _links = Object.values(node.links)
+      const _links = Object
+        .values(node.links)
         .map(d3ToPaperLink);
 
       return createPaperNode(node, Object.fromEntries(_links));

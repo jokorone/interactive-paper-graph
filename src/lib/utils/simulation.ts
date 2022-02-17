@@ -16,6 +16,7 @@ export const useSimulation = (
   data: KeyValueContainer<Node>,
   options = DefaultSettings
 ) => {
+
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
     []
@@ -63,9 +64,10 @@ export const useSimulation = (
 
   const attachData = React.useCallback(
     () => {
-      const _data = Object.values(data),
-            nodes = _data.map(node => node.payload as Node),
-            links = _data.flatMap(node => Object.values(node.links));
+      const
+        _data = Object.values(data),
+        nodes = _data.map(node => node.payload as Node),
+        links = _data.flatMap(node => Object.values(node.links));
 
       if (simulation.nodes().length) {
         simulation.nodes([]);

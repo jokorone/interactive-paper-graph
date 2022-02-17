@@ -5,7 +5,7 @@ import { GraphSettingInputConfig, SimulationSettingsEnum as GraphSetting, Simula
 import { ReactComponent as SettingsSVG } from './../../icons/settings.svg';
 import { useGraphSettings } from '../../lib';
 
-export const SimulationSettings = (props: ReturnType<typeof useGraphSettings>) => {
+export const SimulationSettings = React.memo((props: ReturnType<typeof useGraphSettings>) => {
 
   const [ visible, setVisible ] = React.useState(false);
 
@@ -53,7 +53,7 @@ export const SimulationSettings = (props: ReturnType<typeof useGraphSettings>) =
     {visible && Settings}
   </div>
   );
-}
+});
 
 
 
