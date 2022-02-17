@@ -21,8 +21,15 @@ Provide the user with
 - custom interaction hooks intercepting canvas/ paper events
 - sensible defaults to quickly get a interactive force graph running
 
+# Todo
 
-
+- add linking functionality
+- refactor registering interaction handlers
+  - emit source events to user handlers
+- add support for different paper shapes
+  - either predefined
+  - or managed and created by user (user provides factory contructor: `(options) => paper.Item`)
+- compile and bundle `src/lib`, publish to `npm`
 
 # Development
 
