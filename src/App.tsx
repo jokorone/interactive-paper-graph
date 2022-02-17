@@ -34,7 +34,7 @@ const dataset = (size = 1) => {
 const initialSimulationSettings = {
   chargeForceStrength: -120,
   chargeDistanceMin: 1,
-  chargeDistanceMax: 420,
+  chargeDistanceMax: 400,
   collideRadius: 5,
   collideStrength: 0,
   linkDistance: 35,

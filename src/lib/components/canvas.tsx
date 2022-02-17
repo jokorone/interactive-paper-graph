@@ -180,6 +180,6 @@ export const Canvas = React.memo((props: GraphProps) => {
       items.current?.push(paper.createPaperNode(node, {}));
 
     }}>Add Node</button>
-    <canvas ref={ref}></canvas>
+    <canvas width='100%' height='100%' ref={ref}></canvas>
   </>);
 });
