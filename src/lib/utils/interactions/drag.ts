@@ -4,13 +4,15 @@ import Paper from "paper";
 import { D3DragEvent } from "d3-drag";
 import { Simulation } from "d3-force";
 
-import { Node, Link } from './../../models';
+import { Node, Link, KeyValueContainer } from './../../models';
 import { DefaultInteractionHandlers } from "../../defaults";
 
 type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement, Node>;
 
+type DraggedNode = Node & { hints: KeyValueContainer<paper.Path> }
+
 export const useDrag = (drag = DefaultInteractionHandlers.drag) => {
-  const draggedNode = React.useRef<Node | null>(null);
+  const draggedNode = React.useRef<DraggedNode | null>(null);
 
   const createDragHandler = (mouse: paper.Path, simulation: Simulation<Node, Link>) => {
 
@@ -26,7 +28,12 @@ export const useDrag = (drag = DefaultInteractionHandlers.drag) => {
       event.subject.fy = event.y;
 
       mouse.position = new Paper.Point(event.x, event.y);
-      draggedNode.current = event.subject;
+
+      draggedNode.current = {
+        ...event.subject,
+        hints: draggedNode.current?.hints || {}
+      };
+
       drag.handle.dragging(draggedNode.current);
     }
 
@@ -36,6 +43,7 @@ export const useDrag = (drag = DefaultInteractionHandlers.drag) => {
       event.subject.fy = null;
 
       if (draggedNode.current) {
+        Object.values(draggedNode.current.hints).map(path => path.remove());
         draggedNode.current = null;
         drag.handle.dragstop();
       }

@@ -77,24 +77,34 @@ export const Canvas = React.memo((props: GraphProps) => {
     () => {
       project.current     = new Paper.Project(ref.current!);
       context.current     = ref.current!.getContext('2d');
-      items.current       = paper.createPaperItems();
+
+      project.current!.view.onFrame = draw;
+      resizeCanvas();
+
+      window.addEventListener('resize', resizeCanvas);
+
+      return () => window.removeEventListener('resize', resizeCanvas);
+    },
+    []
+  );
+  React.useEffect(setupCanvas, [setupCanvas]);
+
+  const updateCanvas = React.useCallback(
+    () => {
+      items.current = paper.createPaperItems();
       interaction.current = initHandlers(
         project.current!,
         ref.current!,
         sim.simulation
       );
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      project.current!.view.onFrame = draw;
 
       return () => {
         project.current!.clear();
-        window.removeEventListener('resize', resizeCanvas);
       }
     },
-    []
+    [data]
   );
-  React.useEffect(setupCanvas, [setupCanvas]);
+  React.useEffect(updateCanvas, [updateCanvas]);
 
   const updateCanvasTheme = React.useCallback(
     () => {
@@ -129,7 +139,7 @@ export const Canvas = React.memo((props: GraphProps) => {
 
       let label = currentItem.label;
 
-      const { isHovered, isDragged } = interaction.current!.handle(d3node, node);
+      const { isHovered, isDragged, draggedNode } = interaction.current!.handle(d3node, node);
 
       currentItem.is = {
         hovered: isHovered,
@@ -150,6 +160,30 @@ export const Canvas = React.memo((props: GraphProps) => {
 
         update.highlight(node, label || undefined);
       } else {
+        if (!currentItem.is.dragged && draggedNode?.id) {
+          const
+            alreadyLinked = Object.keys(draggedNode?.links || {}).includes(d3node.id),
+            mayCollideSoon = paper.test.detectPotencialCollision(draggedNode, d3node);
+
+          if (!alreadyLinked && mayCollideSoon) {
+            sim.unsetChargeDistance(draggedNode, Object.keys(draggedNode.hints));
+
+            if (!draggedNode.hints[d3node.id]) {
+              draggedNode.hints[d3node.id] = paper.create.link();
+            }
+
+            update.link(false, draggedNode, d3node, draggedNode.hints[d3node.id])
+          }
+
+          if (!mayCollideSoon && draggedNode.hints[d3node.id]) {
+            draggedNode.hints[d3node.id].remove();
+          }
+
+          if (!alreadyLinked && paper.test.detectCollision(draggedNode, d3node)) {
+            create.link(draggedNode, d3node);
+          }
+
+        }
 
         update.node(d3node, node);
 
@@ -169,17 +203,14 @@ export const Canvas = React.memo((props: GraphProps) => {
       ++index;
     }
 
-    (frameEvent.count % 24 === 0)
-      && interaction.current!.emit(highlights.pop());
+    if (frameEvent.count % 24 === 0) {
+      interaction.current!.emit(highlights.pop());
+    }
+
   }
 
   return (<>
-    <button className='absolute bottom-2 left-2 w-12' onClick={() => {
-
-      const node = create.node();
-      items.current?.push(paper.createPaperNode(node, {}));
-
-    }}>Add Node</button>
+    <button className='absolute bottom-2 left-2 w-12' onClick={create.node}>Add Node</button>
     <canvas width='100%' height='100%' ref={ref}></canvas>
   </>);
 });

@@ -20,11 +20,13 @@ export const useZoom = () => {
   const scale = React.useRef<number>(1);
 
   function createZoomHandler(view: paper.View) {
+    const { min, max } = InteractionConfig.Zoom;
+
     const zoomHandler = ({ transform: { k }, ...event }: D3ZoomEvent<HTMLCanvasElement, Node>) => {
       view.zoom = scale.current = k;
       cancelEvent(event.sourceEvent);
-    },
-    { min, max } = InteractionConfig.Zoom;
+    };
+
 
     return zoom()
       .scaleExtent([ min, max ])

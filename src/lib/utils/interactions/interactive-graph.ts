@@ -14,6 +14,7 @@ import { useZoom, useMouse, usePan, useDrag } from './../interactions';
 
 import { cancelEvent } from './../helpers';
 import { DefaultSettings } from '../..';
+import { useSimulation } from '..';
 
 const InteractionConfig = {
   Zoom: {
@@ -30,10 +31,6 @@ export type DragEvent = D3DragEvent<HTMLCanvasElement, Node | HTMLCanvasElement,
 export const useInteractiveGraph = (
   data: KeyValueContainer<Node>,
   handlers = DefaultSettings.handlers,
-  linkHandler = {
-    intersectionObserver: ({subject}: DragEvent) => {},
-    cleanupDragSubject: () => {}
-  }
 ) => {
   const
     { mouse,
@@ -70,7 +67,7 @@ export const useInteractiveGraph = (
     const dragging = (event: DragEvent) => {
       (event.subject instanceof HTMLCanvasElement
         ? [onPan.panning]
-        : [onDrag.dragging, linkHandler.intersectionObserver]
+        : [onDrag.dragging]
       ).map(fn => fn(event));
 
       cancelEvent(event.sourceEvent);
@@ -79,7 +76,7 @@ export const useInteractiveGraph = (
     const stop = (event: DragEvent) => {
       (event.subject instanceof HTMLCanvasElement
         ? [onPan.panstop]
-        : [onDrag.dragstop, linkHandler.cleanupDragSubject]
+        : [onDrag.dragstop]
       ).map(fn => fn(event));
 
       cancelEvent(event.sourceEvent);
@@ -97,7 +94,7 @@ export const useInteractiveGraph = (
       isHovered = mouse.current!.intersects(item),
       isDragged = current.id === draggedNode.current?.id;
 
-    return { isHovered, isDragged };
+    return { isHovered, isDragged, draggedNode: draggedNode.current };
   }
 
   const createClickHandler = (simulation: Simulation<Node, Link>) => {
@@ -106,6 +103,9 @@ export const useInteractiveGraph = (
       { x, y } = mouse.current!.position,
         d3node = simulation.find(x, y, InteractionConfig.Drag.selectionMinDistance),
         target = d3node && data[d3node.id];
+
+      console.log(target);
+
 
       Promise.resolve() //state dispatch handle synchronously
         .then(() => handlers.click.handle([ x, y ], target));

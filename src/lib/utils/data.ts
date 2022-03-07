@@ -14,13 +14,11 @@ export const useGraphData = (source: { nodes: RawNode[], links: RawLink[] }) => 
       group: 420,
     };
 
-    const newNode: Node = {
+    const newNode = {
       ...payload,
       payload,
       links: {},
-      x: 0,
-      y: 0
-    };
+    } as Node;
 
     setData(nodes => ({ ...nodes, [newNode.id]: newNode }));
 
@@ -28,16 +26,28 @@ export const useGraphData = (source: { nodes: RawNode[], links: RawLink[] }) => 
   }
 
   const addLink = (n0: Node, n1: Node) => {
-    console.log('create-link');
+
     let newlink: Link = {
       source: n0,
       target: n1,
       value: 10
-    } as Link;
+    };
 
-    const sourceNode = data[newlink.source.id];
+    const node = data[n0.id]
+    console.log(node);
 
-    sourceNode.links[newlink.target.id] = newlink;
+
+    // .links[n1.id] = newlink;
+
+
+
+
+    // data[newlink.source.id].links[newlink.target.id] = newlink;
+
+    setData(nodes => ({
+      ...nodes,
+      [newlink.source.id]: data[newlink.source.id]
+    }));
 }
 
 
@@ -55,13 +65,12 @@ const fromRawData = (data: {
 
     const createLink = (link: RawLink) => {
       const iterable = makeIterable(link.target);
-      /** WTF */
+
       const _link = iterable({
         source: node.id,
         target: link.target,
         value: link.value
       });
-      /** WTF_AFTER */
 
       return _link;
     };

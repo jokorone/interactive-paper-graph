@@ -10,7 +10,6 @@ export type PaperNode = {
   node: paper.Path.Circle;
   label: paper.PointText | null;
   links: KeyValueContainer<PaperLink>;
-  hints: KeyValueContainer<paper.Path> | null;
   payload: Node,
   is: {
     hovered: boolean,

@@ -92,7 +92,6 @@ function App() {
       zoomstop: () => {console.log('zoomstop')},
     },
     onHover = (target: Node | undefined) => {
-
       if (target && target.id !== highlight?.id) {
         setHighlight(target);
       }
@@ -117,8 +116,8 @@ function App() {
         data={dataset()}
         bounds={{
           full: true,
-          width: 800,
-          height: 600,
+          // width: 800,
+          // height: 600,
         }}
         colors={colors}
         paper={intitialPaperSettings}

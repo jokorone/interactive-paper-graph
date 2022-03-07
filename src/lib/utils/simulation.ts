@@ -6,7 +6,7 @@ import {
   forceLink,
   forceCollide,
   forceX,
-  forceY
+  forceY,
 } from 'd3';
 
 import { Node, Link, KeyValueContainer } from '../models';
@@ -16,6 +16,12 @@ export const useSimulation = (
   data: KeyValueContainer<Node>,
   options = DefaultSettings
 ) => {
+  let currentChargeStrength = options.graph.chargeForceStrength;
+
+  const [ draggedNode, setDraggedNode ] = React.useState<{
+    node: Node,
+    closeIds: string[]
+  } | null>();
 
   const simulation = React.useMemo(
     () => forceSimulation<Node, Link>(),
@@ -33,8 +39,14 @@ export const useSimulation = (
     []
   );
 
+  const restart = () => {
+    simulation.alphaDecay(.01);
+    simulation.alpha(.3).restart();
+  }
+
   const attachForces = React.useCallback(
     (settings: typeof DefaultSettings.graph) => {
+
       simulation
         .force('link', forces.forceLink
           .distance(settings.linkDistance)
@@ -54,34 +66,64 @@ export const useSimulation = (
         .force('forceY', forces.forceY
           .y((options.bounds.full ? window.innerHeight : options.bounds.height) / 2))
 
-      simulation.alphaDecay(.01);
-      simulation.alpha(.3).restart();
+      currentChargeStrength = settings.chargeForceStrength;
 
-      return () => simulation.restart() && void 0;
+      return restart;
     },
     [simulation, forces]
   );
 
-  const attachData = React.useCallback(
+  const updateData = React.useCallback(
     () => {
       const
         _data = Object.values(data),
-        nodes = _data.map(node => node.payload as Node),
+        // nodes = _data.map(node => node as Node),
         links = _data.flatMap(node => Object.values(node.links));
 
-      if (simulation.nodes().length) {
-        simulation.nodes([]);
-        forces.forceLink.links([]);
-      }
+      // console.log('nodes', nodes.length, nodes.at(-1));
+      console.log('links', links.length, links.at(-1));
 
-      simulation.nodes(nodes);
+      simulation.nodes(_data);
       forces.forceLink.links(links as any);
 
-      simulation.alpha(.3).restart();
+      return restart;
     },
-    [data, simulation, forces]
+    [data]
   );
-  React.useEffect(attachData, [attachData]);
+  React.useEffect(updateData, [updateData]);
 
-  return {simulation, attachForces};
+  const unsetChargeDistance =(
+    _draggedNode: Node,
+    neighbourIds: string[]
+  ) => {
+    console.log(draggedNode?.node.id, _draggedNode.id);
+
+    if (
+      _draggedNode.id === draggedNode?.node.id
+      && neighbourIds.length === draggedNode.closeIds.length
+    ) {
+      return;
+    }
+    console.log('set dragged node', _draggedNode.id);
+
+    setDraggedNode({node: _draggedNode, closeIds: neighbourIds });
+  }
+
+  React.useEffect(() => {
+    console.log('change charge strength');
+
+    forces.forceCharge.strength((node) => {
+      const
+        isDragged = (node as Node).id === draggedNode?.node.id,
+        isDraggedNeighbour = draggedNode?.closeIds.includes((node as Node).id);
+
+      if (isDragged || isDraggedNeighbour) {
+        return 0;
+      }
+
+      return currentChargeStrength;
+    });
+  }, [draggedNode])
+
+  return { simulation, attachForces, updateData, unsetChargeDistance };
 }

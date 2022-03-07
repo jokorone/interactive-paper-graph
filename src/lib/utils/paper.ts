@@ -5,6 +5,7 @@ import { KeyValueContainer, Node, PaperModel, PaperLink } from '../models';
 
 import { makeIterable } from './data';
 import { DefaultSettings } from '..';
+import { distanceBetween } from './helpers';
 
 export const usePaperItems = (
   data: KeyValueContainer<Node>,
@@ -27,7 +28,6 @@ export const usePaperItems = (
       links,
       node: create.node(),
       payload: node,
-      hints: null,
       label: null,
       is: {
         hovered: false,
@@ -38,23 +38,26 @@ export const usePaperItems = (
   }
 
   const createPaperItems = React.useCallback(
-    (): PaperModel => Object.entries(data).map(([ name, node ]) => {
+    (): PaperModel => {
 
-      const d3ToPaperLink = (link: any) => {
-        const iterable = makeIterable(link.target.id);
+      return Object.entries(data).map(([ _name, node ]) => {
 
-        return iterable({
-          target: link.target as Node,
-          path: create.link()
-        });
-      }
+        const d3ToPaperLink = (link: any) => {
+          const iterable = makeIterable(link.target.id);
 
-      const _links = Object
-        .values(node.links)
-        .map(d3ToPaperLink);
+          return iterable({
+            target: link.target as Node,
+            path: create.link()
+          });
+        }
 
-      return createPaperNode(node, Object.fromEntries(_links));
-    }),
+        const _links = Object
+          .values(node.links)
+          .map(d3ToPaperLink);
+
+        return createPaperNode(node, Object.fromEntries(_links));
+      });
+    },
     [data]
   );
 
@@ -131,9 +134,23 @@ export const usePaperItems = (
     itemUpdater.current = makeItemUpdater();
   }, [makeItemUpdater]);
 
+  const didCollide = (n0: Node, n1: Node, distance: number) => distanceBetween(n0, n1) <= distance;
+
+  const detectCollision = (n0: Node, n1: Node) => {
+    return didCollide(n0, n1, options.paper.node.radius + options.paper.node.highlight.radius);
+  }
+
+  const detectPotencialCollision = (n0: Node, n1: Node) => {
+    return didCollide(n0, n1, options.paper.node.radius + options.paper.node.highlight.radius + 50);
+  }
+
   return {
     createPaperNode,
     createPaperItems,
+    test: {
+      detectCollision,
+      detectPotencialCollision,
+    },
     getItemUpdater: () => itemUpdater.current,
     create
   };
