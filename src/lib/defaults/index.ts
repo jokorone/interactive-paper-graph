@@ -9,6 +9,7 @@ const HumanSimulationSettings = {
   [SimulationSettingsEnum.collideStrength]: 'collide strength',
   [SimulationSettingsEnum.collideRadius]: 'collide radius',
   [SimulationSettingsEnum.linkDistance]: 'link distance',
+  [SimulationSettingsEnum.linkForce]: 'link force',
   [SimulationSettingsEnum.forceX]: 'position (x)',
   [SimulationSettingsEnum.forceY]: 'position (y)',
 };
@@ -21,6 +22,7 @@ export const DefaultSimulationSettings: {
   chargeDistanceMax: 420,
   collideRadius: 5,
   collideStrength: 0,
+  forceLink: .4,
   linkDistance: 35,
   forceX: Math.floor(window.innerWidth * .65),
   forceY: Math.floor(window.innerHeight * .5),
@@ -41,6 +43,11 @@ export const SimulationSettingsInputs = {
     step: 1,
     min: 0,
     max: 100,
+  },
+  [SimulationSettingsEnum.linkForce]: {
+    step: .01,
+    min: 0,
+    max: 1,
   },
   [SimulationSettingsEnum.chargeDistanceMin]: {
     step: .1,

@@ -7,6 +7,7 @@ export enum SimulationSettingsEnum {
   collideStrength = 'collideStrength',
   collideRadius = 'collideRadius',
   linkDistance = 'linkDistance',
+  linkForce = 'forceLink',
   forceX = 'forceX',
   forceY = 'forceY',
 };

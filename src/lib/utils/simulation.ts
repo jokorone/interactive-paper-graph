@@ -39,6 +39,7 @@ export const useSimulation = (
         .force('link', forces.forceLink
           .distance(settings.linkDistance)
           .iterations(1)
+          .strength(settings.forceLink)
           .id(({ id }: any) => id ))
         .force('charge', forces.forceCharge
           .strength(settings.chargeForceStrength)

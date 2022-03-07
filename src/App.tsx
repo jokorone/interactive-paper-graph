@@ -38,6 +38,7 @@ const initialSimulationSettings = {
   collideRadius: 5,
   collideStrength: 0,
   linkDistance: 35,
+  forceLink: .2,
   forceX: Math.floor(window.innerWidth * .65),
   forceY: Math.floor(window.innerHeight * .5),
 }
